@@ -32,10 +32,7 @@
     <script>
       (function() {
         d3.json("https://raw.githubusercontent.com/yan073/visualtag/gh-pages/protein_cath.json", function(error, json) {
-          var getColor = function (d) {
-            return '#a0b0c0';
-          };
-
+          
           var treemap = d3.select("#vis").append("svg")
             .chart("treemap")
             .value("size")
