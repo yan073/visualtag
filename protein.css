@@ -1,0 +1,139 @@
+html {
+    display: table;
+    margin: auto; 
+}
+
+  #vis {
+    width: 960px;
+    height: 500px; }
+
+  .cell text {
+    cursor: move;
+    font: 10px sans-serif;
+    text-anchor: middle; }
+
+
+  
+  .leafc1_1 text { 
+    fill: #E7F6FF;
+  }
+  .leafc1_2 text { 
+    fill: #E7F6FF;
+  }      
+  .leafc1_3 text { 
+    fill: #E7F6FF;
+  }
+  .leafc2_1 text { 
+    fill: #FFC6C1;
+  }
+  .leafc2_2 text { 
+    fill: #FFC6C1;
+  }      
+  .leafc2_3 text { 
+    fill: #FFC6C1;
+  }
+
+  .leafc3_1 text { 
+    fill: #8D8B1A;
+  }
+  .leafc3_2 text { 
+    fill: #8D8B1A;
+  }      
+  .leafc3_3 text { 
+    fill: #8D8B1A;
+  }
+
+  .leafc4_1 text { 
+    fill: #006A63;
+  }
+  .leafc4_2 text { 
+    fill: #006A63;
+  }      
+  .leafc4_3 text { 
+    fill: #006A63;
+  }            
+
+  .leafcu_1 text { 
+    fill: #5E5E5E;
+  }
+  .leafcu_2 text { 
+    fill: #5E5E5E;
+  }      
+  .leafcu_3 text { 
+    fill: #5E5E5E;
+  }  
+
+  .leafc1_1 rect{ 
+    stroke: #E7F6FF;
+    fill: #0090D8;
+  }
+  
+  .leafc1_2 rect { 
+    stroke: #E7F6FF;
+    fill: #00AAFF;
+  }
+
+  .leafc1_3 rect { 
+    stroke: #E7F6FF;
+    fill: #59C8FF;
+  }
+
+  .leafc2_1 rect { 
+    stroke: #FFC6C1;
+    fill: #FF585B;
+  }
+
+  .leafc2_2 rect { 
+    stroke: #FFC6C1;
+    fill: #FF0004;
+  }
+
+  .leafc2_3 rect { 
+    stroke: #FFC6C1;
+    fill: #D90004;
+  }
+
+  .leafc3_1 rect { 
+    stroke: #8D8B1A;
+    fill: #FFFFB2;
+  }
+
+  .leafc3_2 rect { 
+    stroke: #8D8B1A;
+    fill: #FFFF00;
+  }
+
+  .leafc3_3 rect { 
+    stroke: #8D8B1A;
+    fill: #D8D800;
+  }
+
+  .leafc4_1 rect { 
+    stroke: #006A63;
+    fill: #00FFD3;
+  }
+
+  .leafc4_2 rect { 
+    stroke: #006A63;
+    fill: #B2FFF2;
+  }
+
+  .leafc4_3 rect { 
+    stroke: #006A63;
+    fill: #61D4B4;
+  }
+
+  .leafcu_1 rect { 
+    stroke: #5E5E5E;
+    fill: #F2F2F2;
+  }
+
+  .leafcu_2 rect { 
+    stroke: #5E5E5E;
+    fill: #D5D5D5;
+  }
+
+  .leafcu_3 rect { 
+    stroke: #5E5E5E;
+    fill: #A7A7A7;
+  }
