@@ -1087,6 +1087,7 @@ d3.chart("hierarchy").extend("treemap", {
         ['#00FFD3','#61D4B4','#B2FFF2'],
         ['#D5D5D5','#A7A7A7','#F2F2F2']
         ];
+
     if (typeof cathCategoryColours !== 'undefined') {
       colorPalette = cathCategoryColours;
     }
@@ -1110,14 +1111,19 @@ d3.chart("hierarchy").extend("treemap", {
 
       events: {
         "enter": function() {
-          this.classed( "leaf", function(d) { return d.isLeaf; });
+          //this.classed( "leaf", function(d) { return d.isLeaf; });
+          this.attr("class", function(d) { 
+            var classvar = "cell";
+            if (d.isLeaf){ 
+              classvar = classvar + " leaf " + chart.getLeafClass(d);
+            }
+            return classvar; });
 
           this.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
           
           this.append("rect")
             .attr("width", function(d) { return d.dx; })
-            .attr("height", function(d) { return d.dy; })
-            .attr("fill", function(d) { return chart.getColour(d); });
+            .attr("height", function(d) { return d.dy; });
 
           this.append("text")
             .attr("x", function(d) { return d.dx / 2; })
@@ -1132,31 +1138,30 @@ d3.chart("hierarchy").extend("treemap", {
     });
   },
 
-  stringToIntHash: function(str, upperbound, lowerbound) {
-    let result = 0;
-    for (let i = 0; i < str.length; i++) {
-      result = result + str.charCodeAt(i);
-    }  
-    return (result % (upperbound - lowerbound)) + lowerbound;
-  },
-
-  getColour: function(d) { 
-    let cat = d.isLeaf ? d.parent.name.charAt(0) : null;//'1', '2', '3', '4', 'u'
+  getLeafClass : function(d) { 
+    let cat = d.parent.name.charAt(0);//'1', '2', '3', '4', 'u'
     if (cat != null) {
-      var colorRange = this.extColor[cat];
+      var categoryName = d.name;
       if (cat != 'u') {
-        var categoryName = d.parent.name;
+        categoryName = d.parent.name;
         if (categoryName.length > 2) {
           let index = categoryName.indexOf('.', 2);
           if(index > 0) {
             categoryName = categoryName.substring(0, index);
           }
         }
-        return colorRange( this.stringToIntHash( categoryName, 0, this.extColorCount) );
       }
-      return colorRange( this.stringToIntHash(d.name, 0, this.extColorCount) );
+      return "leafc" + cat + "_" + this.stringToIntHash(categoryName, this.extColorCount+1, 1);
     }
-    return null;
+    return "";
+  },
+
+  stringToIntHash: function(str, upperbound, lowerbound) {
+    let result = 0;
+    for (let i = 0; i < str.length; i++) {
+      result = result + str.charCodeAt(i);
+    }  
+    return (result % (upperbound - lowerbound)) + lowerbound;
   },
 
   transform: function(root) {
