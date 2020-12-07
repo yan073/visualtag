@@ -28,10 +28,11 @@
 
           treemap.draw(json);
           tippy('.leaf', {
-		        performance: true,
+            allowHTML: true,
 		        arrow: true,
+            delay: 100,
+		        performance: true,
 		        size: 'large',
-		        animation: 'scale',
 	        });
         });
       }());
