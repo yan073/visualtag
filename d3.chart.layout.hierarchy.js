@@ -1078,24 +1078,7 @@ d3.chart("hierarchy").extend("treemap", {
     console.log(defc1);
     var defc2 = colordef['color'];
     console.log(defc2);
-    chart.extColor = {}
     chart.extColorCount = 3;
-    var colorPalette = [
-        ['#0090D8','#00AAFF','#59C8FF'],
-        ['#FF585B','#D90004','#FF0004'],
-        ['#FFFFB2','#FFFF00','#D8D800'],
-        ['#00FFD3','#61D4B4','#B2FFF2'],
-        ['#D5D5D5','#A7A7A7','#F2F2F2']
-        ];
-
-    if (typeof cathCategoryColours !== 'undefined') {
-      colorPalette = cathCategoryColours;
-    }
-    chart.extColor['1'] =  d3.scale.ordinal().range( colorPalette[0] );
-    chart.extColor['2'] =  d3.scale.ordinal().range( colorPalette[1] );
-    chart.extColor['3'] =  d3.scale.ordinal().range( colorPalette[2] );
-    chart.extColor['4'] =  d3.scale.ordinal().range( colorPalette[3] );
-    chart.extColor['u'] =  d3.scale.ordinal().range( colorPalette[4] );
     
     chart.d3.layout = d3.layout.treemap();
 
@@ -1120,6 +1103,12 @@ d3.chart("hierarchy").extend("treemap", {
             return classvar; });
 
           this.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+          this.attr("data-tippy-content", function(d) { 
+            if (d.isLeaf) {
+              return d.parent.name + ' ' + d.protein;
+            }
+            return null;
+          });
           
           this.append("rect")
             .attr("width", function(d) { return d.dx; })
