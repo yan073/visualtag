@@ -30,9 +30,13 @@
           tippy('.leaf', {
             allowHTML: true,
 		        arrow: true,
-            delay: 100,
+            delay: [100, null],
+            maxWidth: 350,
 		        performance: true,
-		        size: 'large',
+            size: 'large',
+            //interactive: true, -- tooltip doesn't work
+            //appendTo: () => document.body, -- could not see the difference
+            // aria, getReferenceClientRect
 	        });
         });
       }());

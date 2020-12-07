@@ -1,11 +1,11 @@
 html {
-    display: table;
-    margin: auto; 
+    display: block;
 }
 
   #vis {
-    width: 960px;
-    height: 500px; }
+    width: 100%;
+    height: 600px; 
+    margin: 5x 5x 5x 5x;}
 
   .cell text {
     cursor: move;
