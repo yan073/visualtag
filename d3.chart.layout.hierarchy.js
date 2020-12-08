@@ -1129,8 +1129,8 @@ d3.chart("hierarchy").extend("treemap", {
     if (cat != 'u') {
       content = content + ', <a href="http://www.cathdb.info/version/latest/superfamily/' + cath + '/classification" >' + cath +'</a>';
     }
+    content += "<p>Total number of clinical trials mentioning this protein: 28</p>"
     return content;
-    //return content.replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");;
   },
 
   getLeafClass : function(d) { 
