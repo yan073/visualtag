@@ -1125,11 +1125,11 @@ d3.chart("hierarchy").extend("treemap", {
   getLeafContent : function(d) { 
     let cath = d.parent.name;
     let cat = cath.charAt(0);//'1', '2', '3', '4', 'u'
-    var content = '<a href="https://aquaria.app/' + d.name + '">'+d.name+'</a>';
+    var content = '<a href="https://aquaria.app/' + d.name + '"><strong>'+d.name+'</strong></a>';
     if (cat != 'u') {
-      content = content + ', <a href="http://www.cathdb.info/version/latest/superfamily/' + cath + '/classification" >' + cath +'</a>';
+      content = content + ', <a href="http://www.cathdb.info/version/latest/superfamily/' + cath + '/classification" ><strong>' + cath +'</strong></a>';
     }
-    content += "<p>Total number of clinical trials mentioning this protein: 28</p>"
+    content += '<p>Total number of clinical trials mentioning this protein: ' + d.size + '</p>';
     return content;
   },
 
