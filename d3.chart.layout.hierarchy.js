@@ -1103,12 +1103,7 @@ d3.chart("hierarchy").extend("treemap", {
             return classvar; });
 
           this.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-          this.attr("data-tippy-content", function(d) { 
-            if (d.isLeaf) {
-              return d.parent.name + ' ' + d.protein;
-            }
-            return null;
-          });
+          this.attr("data-tippy-content", d => d.isLeaf ? chart.getLeafContent(d) : null);
           
           this.append("rect")
             .attr("width", function(d) { return d.dx; })
@@ -1125,6 +1120,17 @@ d3.chart("hierarchy").extend("treemap", {
         },
       }
     });
+  },
+
+  getLeafContent : function(d) { 
+    let cath = d.parent.name;
+    let cat = cath.charAt(0);//'1', '2', '3', '4', 'u'
+    var content = '<a href="https://aquaria.app/' + d.name + '">'+d.name+'</a>';
+    if (cat != 'u') {
+      content = content + ', <a href="http://www.cathdb.info/version/latest/superfamily/' + cath + '/classification" >' + cath +'</a>';
+    }
+    return content;
+    //return content.replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;");;
   },
 
   getLeafClass : function(d) { 
