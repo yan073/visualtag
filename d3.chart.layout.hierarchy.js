@@ -1135,7 +1135,10 @@ d3.chart("hierarchy").extend("treemap", {
 
   getLeafClass : function(d) { 
     let cat = d.parent.name.charAt(0);//'1', '2', '3', '4', 'u'
+    return cat != null ? "leafc" + cat : "";
+    /*
     if (cat != null) {
+      return "leafc" + cat;
       var categoryName = d.name;
       if (cat != 'u') {
         categoryName = d.parent.name;
@@ -1149,6 +1152,7 @@ d3.chart("hierarchy").extend("treemap", {
       return "leafc" + cat + "_" + this.stringToIntHash(categoryName, this.extColorCount+1, 1);
     }
     return "";
+    */
   },
 
   stringToIntHash: function(str, upperbound, lowerbound) {
