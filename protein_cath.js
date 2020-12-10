@@ -1,6 +1,5 @@
 var todo_cells;
 var high_priority_todo;
-//var colored_adjacents;
 var adjacent;
 var colormap;
 var adjacent_colors;
@@ -16,7 +15,6 @@ function set_leaf_color() {
 function set_color_for_cat(cat){
     todo_cells = [];
     high_priority_todo = [];
-    //colored_adjacents = {};
     adjacent = {};
     colormap = {};
     adjacent_colors = {};
@@ -50,14 +48,12 @@ function set_color_to_cell(current, cat, leaves){
         if (level2 == null) {
             level2 = leaves[current].getAttribute('transform');
         }
-        let adjs = adjacent[current];
         let new_c = get_diff_color(adjacent_colors[level2]);
         colored.push(current);
         colormap [current] = new_c;
         let colorclass = cat + '_' + new_c;
         leaves[current].classList.add( colorclass );
         let siblings = get_cells_in_same_level2(level2, leaves);
-        console.log('found ' + siblings.length + ' cells in the same category ' + level2);        
         for(var i=0;i<siblings.length;i++){
             let next = siblings[i];
             if (next != current) {
@@ -102,9 +98,6 @@ function get_cells_in_same_level2(level2, leaves){
 }
 
 function process_neighbor_after_coloring(current, color, level2, leaves){
-    if (level2.length > 10) {
-        console.log('process ' + level2);
-    }
     let adjs = adjacent[current];
     for(var i=0;i<adjs.length;i++) {
         let neighbor = adjs[i];
