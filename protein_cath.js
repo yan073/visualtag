@@ -42,6 +42,8 @@ function set_color_for_cat(cat){
 
 function set_color_to_cell(current, cat, leaves){
     if (! (current in colors)) {
+        let level2 = leaves[current].getAttribute('level2');
+        console.log('----- coloring ' + level2 + ', for cell ' + current);
         let adjs = adjacent[current];
         let new_c = get_diff_color(current, adjs, colors);
         colors [current] = new_c;
@@ -49,7 +51,7 @@ function set_color_to_cell(current, cat, leaves){
         leaves[current].classList.add( colorclass );
         process_neighbor_after_coloring(current);
 
-        let level2 = leaves[current].getAttribute('level2');
+        console.log('---- coloring ' + level2);
         if (level2 != null && level2.length > 0) {
             for(var i = 1; i< leaves.length - 1; i++) {
                 if (i!= current) {
@@ -75,20 +77,31 @@ function process_neighbor_after_coloring(current){
     for(var i=0;i<adjs.length;i++) {
         let neighbor = adjs[i];
         if(!(neighbor in colors)){
-            let calen = colored_adjacents[neighbor].length;
-            if (calen > 2) {
-                high_priority_todo.push(neighbor);
-            } else if (calen == 2){
-                let c0 = colored_adjacents[neighbor][0];
-                if ( adjacent[c0].indexOf(colored_adjacents[neighbor][1]) >=0 ) {
+            let n_color_num = get_color_num(colored_adjacents[neighbor]);
+            if (n_color_num >= 2) {
+                if(high_priority_todo.indexOf(neighbor) <0) {
                     high_priority_todo.push(neighbor);
-                } 
-            } else {
-                todo_cells.push(neighbor);
+                }
+            }
+            else {
+                if (todo_cells.indexOf(neighbor) <0) {
+                    todo_cells.push(neighbor);
+                }
             }
         }
     }
 
+}
+
+function get_color_num(clred_list){
+    var ncs = []
+    for(var i=0;i<clred_list.length;i++) {
+        let nc = colors[clred_list[i]];
+        if (ncs.indexOf(nc) < 0) {
+            ncs.push(nc);
+        }
+    }
+    return ncs.length;
 }
 
 function get_diff_color(current, adjs, colors) {
@@ -120,5 +133,5 @@ function is_adjacent(rect1, rect2) {
 }
 
 function is_same(x1, x2) {
-    return Math.abs(x1 - x2) < 4;  
+    return Math.abs(x1 - x2) < 5;  
 }
