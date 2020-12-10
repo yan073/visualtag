@@ -1,12 +1,21 @@
-var todo_cells = [];
-var high_priority_todo = [];
-var colored_adjacents = {};
-var adjacent = {};
+var todo_cells;
+var high_priority_todo;
+var colored_adjacents;
+var adjacent;
+let num_color_space = 3;
 
 function set_leaf_color() {
-    let cat = "leafc1";
-    let leaves = document.getElementsByClassName(cat);
+    let cats = ["leafc1", "leafc2", "leafc3", "leafc4","leafcu"];
+    cats.forEach(c => set_color_for_cat(c));
+}
 
+function set_color_for_cat(cat){
+    todo_cells = [];
+    high_priority_todo = [];
+    colored_adjacents = {};
+    adjacent = {};
+    
+    let leaves = document.getElementsByClassName(cat);
     let colors = {};
     for(i = 0; i< leaves.length; i++) {
         adjacent[i] = [];
@@ -59,13 +68,12 @@ function set_color_to_cell(current, cat, adjs, colors, leaves){
 }
 
 function get_diff_color(current, adjs, colors) {
-    if (is_color_different(current, 1, adjs, colors)) {
-        return 1;
+    for(var i=1; i<=num_color_space; i++) {
+        if (is_color_different(current, i, adjs, colors)) {
+            return i;
+        }
     }
-    if (is_color_different(current, 2, adjs, colors)) {
-        return 2;
-    }
-    return 3;
+    return Math.floor(Math.random() * Math.floor(num_color_space)) + 1;
 }
 
 function is_color_different(current, new_c, adjs, colors){
