@@ -1,8 +1,7 @@
 var todo_cells = [];
+var high_priority_todo = [];
 var colored_adjacents = {};
 var adjacent = {};
-var total_count = 0;
-var color_max = 500;
 
 function set_leaf_color() {
     let cat = "leafc1";
@@ -25,17 +24,14 @@ function set_leaf_color() {
     }
 
     set_color_to_cell(0, cat, adjacent[0], colors, leaves);
-    while(todo_cells.length >0 && total_count < color_max) {
-        let next = todo_cells.shift(); 
+    while( (todo_cells.length >0 || high_priority_todo.length >0)) {
+        let next = high_priority_todo.length >0 ? high_priority_todo.shift() : todo_cells.shift(); 
         set_color_to_cell(next, cat, adjacent[next], colors, leaves)
-        total_count += 1;
-        console.log('after ' + todo_cells);
     }
 }
 
 function set_color_to_cell(current, cat, adjs, colors, leaves){
     if (! (current in colors)) {
-        console.log('processing ' + current);
         let new_c = get_diff_color(current, adjs, colors);
         colors [current] = new_c;
         leaves[current].classList.add( cat + '_' + new_c);
@@ -47,25 +43,14 @@ function set_color_to_cell(current, cat, adjs, colors, leaves){
             let neighbor = adjs[i];
             if(!(neighbor in colors)){
                 let calen = colored_adjacents[neighbor].length;
-                console.log(neighbor + ' has ' + calen + ' colored adjacents.');
                 if (calen > 2) {
-                    console.log('put ' + neighbor + ' to the beginning of todo_cells - 3');
-                    todo_cells.unshift(neighbor);
+                    high_priority_todo.push(neighbor);
                 } else if (calen == 2){
                     let c0 = colored_adjacents[neighbor][0];
-                    if( neighbor == 3 ) {
-                        console.log('----- cell 3 coloured => ' + colored_adjacents[neighbor]); 
-                        console.log('----- cell 0 neighbours => ' + adjacent[c0]); 
-                        let c1 = colored_adjacents[neighbor][1];
-                        console.log('----- c1 = ' + c1);
-                        console.log(c1 in adjacent[c0]);
-                    }
                     if ( adjacent[c0].indexOf(colored_adjacents[neighbor][1]) >=0 ) {
-                        console.log('put ' + neighbor + ' to the beginning of todo_cells - 2');
-                        todo_cells.unshift(neighbor);
+                        high_priority_todo.push(neighbor);
                     } 
                 } else {
-                    console.log('add ' + neighbor + ' to the end of todo_cells');
                     todo_cells.push(neighbor);
                 }
             }
