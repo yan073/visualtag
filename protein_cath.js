@@ -25,8 +25,6 @@ function set_color_for_cat(cat){
     let leaves = document.getElementsByClassName(cat);
     for(i = 0; i< leaves.length; i++) {
         adjacent[i] = [];
-        //colored_adjacents[i] = [];
-        adjacent_colors[i] = [];
     }
     // find the adjacents for every cell
     for(var i = 0; i< leaves.length - 1; i++) {
@@ -49,9 +47,9 @@ function set_color_for_cat(cat){
 function set_color_to_cell(current, cat, leaves){
     if (colored.indexOf(current)<0) {
         let level2 = leaves[current].getAttribute('level2');
-        console.log('----- coloring ' + level2 + ', for cell ' + current);
+        console.log('----- coloring ' + level2 + ', for cell ' + current + ', adjacent colours= ' + adjacent_colors[level2]);
         let adjs = adjacent[current];
-        let new_c = get_diff_color(current, adjs);
+        let new_c = get_diff_color(adjacent_colors[level2]);
         colored.push(current);
         colormap [current] = new_c;
         let colorclass = cat + '_' + new_c;
@@ -67,8 +65,21 @@ function set_color_to_cell(current, cat, leaves){
             }
         }
         for(var i=0;i<siblings.length;i++){
-            process_neighbor_after_coloring(siblings[i], new_c);
+            process_neighbor_after_coloring(siblings[i], new_c, level2, leaves);
         }
+    }
+}
+
+function get_diff_color(adjcolors) {
+    if (adjcolors === undefined) {
+        return 1;
+    } else {
+        for(var i=1; i<=num_color_space; i++) {
+            if (adjcolors.indexOf(i) <0) {
+                return i;
+            }
+        }
+        return Math.floor(Math.random() * Math.floor(num_color_space)) + 1;
     }
 }
 
@@ -84,19 +95,28 @@ function get_cells_in_same_level2(level2, leaves){
     return samel;
 }
 
-function process_neighbor_after_coloring(current, color){
+function process_neighbor_after_coloring(current, color, level2, leaves){
     let adjs = adjacent[current];
     for(var i=0;i<adjs.length;i++) {
-        let acs = adjacent_colors[adjs[i]]
-        if ( acs.indexOf(color) <0 ) { 
-            acs.push(color);
+        let neighbor = adjs[i];
+        let elem = leaves[neighbor];
+        let sibl2 = elem.getAttribute('level2');
+        if (sibl2 != level2) {
+            if (!(sibl2 in adjacent_colors)) {
+                adjacent_colors[sibl2] = [];
+            }
+            if (adjacent_colors[sibl2].indexOf(color) <0) {
+                adjacent_colors[sibl2].push(color);
+            }
         }
     }
 
     for(var i=0;i<adjs.length;i++) {
         let neighbor = adjs[i];
         if(colored.indexOf(neighbor) < 0){
-            if (adjacent_colors[neighbor].length >= 2) {
+            let elem = leaves[neighbor];
+            let sibl2 = elem.getAttribute('level2');
+            if (adjacent_colors[sibl2].length >= 2) {
                 if(high_priority_todo.indexOf(neighbor) <0) {
                     high_priority_todo.push(neighbor);
                 }
@@ -109,15 +129,6 @@ function process_neighbor_after_coloring(current, color){
         }
     }
 
-}
-
-function get_diff_color(current, adjs) {
-    for(var i=1; i<=num_color_space; i++) {
-        if (is_color_different(current, i, adjs)) {
-            return i;
-        }
-    }
-    return Math.floor(Math.random() * Math.floor(num_color_space)) + 1;
 }
 
 function is_color_different(current, new_c, adjs){
