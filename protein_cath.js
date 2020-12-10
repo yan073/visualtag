@@ -2,6 +2,7 @@ var todo_cells;
 var high_priority_todo;
 var colored_adjacents;
 var adjacent;
+var colors;
 let num_color_space = 3;
 
 function set_leaf_color() {
@@ -14,9 +15,9 @@ function set_color_for_cat(cat){
     high_priority_todo = [];
     colored_adjacents = {};
     adjacent = {};
+    colors = {};
     
     let leaves = document.getElementsByClassName(cat);
-    let colors = {};
     for(i = 0; i< leaves.length; i++) {
         adjacent[i] = [];
         colored_adjacents[i] = [];
@@ -32,39 +33,48 @@ function set_color_for_cat(cat){
         }
     }
 
-    set_color_to_cell(0, cat, adjacent[0], colors, leaves);
+    set_color_to_cell(0, cat, leaves);
     while( (todo_cells.length >0 || high_priority_todo.length >0)) {
         let next = high_priority_todo.length >0 ? high_priority_todo.shift() : todo_cells.shift(); 
-        set_color_to_cell(next, cat, adjacent[next], colors, leaves)
+        set_color_to_cell(next, cat, leaves)
     }
 }
 
-function set_color_to_cell(current, cat, adjs, colors, leaves){
+function set_color_to_cell(current, cat, leaves){
     if (! (current in colors)) {
+        let adjs = adjacent[current];
         let new_c = get_diff_color(current, adjs, colors);
         colors [current] = new_c;
         leaves[current].classList.add( cat + '_' + new_c);
-        for(var i=0;i<adjs.length;i++) {
-            let neighbor = adjs[i];
-            colored_adjacents[neighbor].push(current);
-        }
-        for(var i=0;i<adjs.length;i++) {
-            let neighbor = adjs[i];
-            if(!(neighbor in colors)){
-                let calen = colored_adjacents[neighbor].length;
-                if (calen > 2) {
+        
+        process_neighbor_after_coloring(current);
+    }
+}
+
+function process_neighbor_after_coloring(current){
+    let adjs = adjacent[current];
+    for(var i=0;i<adjs.length;i++) {
+        let neighbor = adjs[i];
+        colored_adjacents[neighbor].push(current);
+    }
+
+    for(var i=0;i<adjs.length;i++) {
+        let neighbor = adjs[i];
+        if(!(neighbor in colors)){
+            let calen = colored_adjacents[neighbor].length;
+            if (calen > 2) {
+                high_priority_todo.push(neighbor);
+            } else if (calen == 2){
+                let c0 = colored_adjacents[neighbor][0];
+                if ( adjacent[c0].indexOf(colored_adjacents[neighbor][1]) >=0 ) {
                     high_priority_todo.push(neighbor);
-                } else if (calen == 2){
-                    let c0 = colored_adjacents[neighbor][0];
-                    if ( adjacent[c0].indexOf(colored_adjacents[neighbor][1]) >=0 ) {
-                        high_priority_todo.push(neighbor);
-                    } 
-                } else {
-                    todo_cells.push(neighbor);
-                }
+                } 
+            } else {
+                todo_cells.push(neighbor);
             }
         }
     }
+
 }
 
 function get_diff_color(current, adjs, colors) {

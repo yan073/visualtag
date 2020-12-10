@@ -1094,7 +1094,18 @@ d3.chart("hierarchy").extend("treemap", {
               classvar = classvar + " leaf " + chart.getLeafClass(d);
             }
             return classvar; });
-
+          this.attr("level2", function(d) { 
+            if (d.isLeaf) {
+              let cath = d.parent.name;
+              if (cath.length > 2) {
+                let index = cath.indexOf('.', 2);
+                if(index > 0) {
+                  return cath.substring(0, index);
+                }      
+              }
+            }
+            return null;
+          });
           this.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
           this.attr("data-tippy-content", d => d.isLeaf ? chart.getLeafContent(d) : null);
           
