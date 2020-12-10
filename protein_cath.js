@@ -45,9 +45,23 @@ function set_color_to_cell(current, cat, leaves){
         let adjs = adjacent[current];
         let new_c = get_diff_color(current, adjs, colors);
         colors [current] = new_c;
-        leaves[current].classList.add( cat + '_' + new_c);
-        
+        let colorclass = cat + '_' + new_c;
+        leaves[current].classList.add( colorclass );
         process_neighbor_after_coloring(current);
+
+        let level2 = leaves[current].getAttribute('level2');
+        if (level2 != null && level2.length > 0) {
+            for(var i = 1; i< leaves.length - 1; i++) {
+                if (i!= current) {
+                    if (level2 == leaves[i].getAttribute('level2')) {
+                        colors [i] = new_c;
+                        leaves[i].classList.add( colorclass );
+                        process_neighbor_after_coloring(i);
+                    }
+                }
+            }
+        }
+
     }
 }
 
