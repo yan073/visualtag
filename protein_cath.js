@@ -1,8 +1,10 @@
 var todo_cells;
 var high_priority_todo;
-var colored_adjacents;
+//var colored_adjacents;
 var adjacent;
 var colors;
+var adjacent_colors;
+
 let num_color_space = 3;
 
 function set_leaf_color() {
@@ -13,14 +15,16 @@ function set_leaf_color() {
 function set_color_for_cat(cat){
     todo_cells = [];
     high_priority_todo = [];
-    colored_adjacents = {};
+    //colored_adjacents = {};
     adjacent = {};
     colors = {};
+    adjacent_colors = {};
     
     let leaves = document.getElementsByClassName(cat);
     for(i = 0; i< leaves.length; i++) {
         adjacent[i] = [];
-        colored_adjacents[i] = [];
+        //colored_adjacents[i] = [];
+        adjacent_colors[i] = [];
     }
     // find the adjacents for every cell
     for(var i = 0; i< leaves.length - 1; i++) {
@@ -67,18 +71,19 @@ function set_color_to_cell(current, cat, leaves){
     }
 }
 
-function process_neighbor_after_coloring(current){
+function process_neighbor_after_coloring(current, color){
     let adjs = adjacent[current];
     for(var i=0;i<adjs.length;i++) {
-        let neighbor = adjs[i];
-        colored_adjacents[neighbor].push(current);
+        let acs = adjacent_colors[adjs[i]]
+        if ( acs.indexOf(color) <0 ) { 
+            acs.push(color);
+        }
     }
 
     for(var i=0;i<adjs.length;i++) {
         let neighbor = adjs[i];
         if(!(neighbor in colors)){
-            let n_color_num = get_color_num(colored_adjacents[neighbor]);
-            if (n_color_num >= 2) {
+            if (adjacent_colors[neighbor].length >= 2) {
                 if(high_priority_todo.indexOf(neighbor) <0) {
                     high_priority_todo.push(neighbor);
                 }
@@ -91,17 +96,6 @@ function process_neighbor_after_coloring(current){
         }
     }
 
-}
-
-function get_color_num(clred_list){
-    var ncs = []
-    for(var i=0;i<clred_list.length;i++) {
-        let nc = colors[clred_list[i]];
-        if (ncs.indexOf(nc) < 0) {
-            ncs.push(nc);
-        }
-    }
-    return ncs.length;
 }
 
 function get_diff_color(current, adjs, colors) {
