@@ -1,6 +1,8 @@
 var todo_cells = [];
 var colored_adjacents = {};
 var adjacent = {};
+var total_count = 0;
+var color_max = 500;
 
 function set_leaf_color() {
     let cat = "leafc1";
@@ -11,44 +13,59 @@ function set_leaf_color() {
         adjacent[i] = [];
         colored_adjacents[i] = [];
     }
-    var i,j;
     // find the adjacents for every cell
-    for(i = 0; i< leaves.length - 1; i++) {
+    for(var i = 0; i< leaves.length - 1; i++) {
         let rect1 = leaves[i].getBoundingClientRect();
-        for(j=i+1; j < leaves.length; j++ ) {
+        for(var j=i+1; j < leaves.length; j++ ) {
             if (is_adjacent(rect1, leaves[j].getBoundingClientRect() )){
                 adjacent[i].push(j);
                 adjacent[j].push(i);
             }
         }
     }
+
     set_color_to_cell(0, cat, adjacent[0], colors, leaves);
-    while(todo_cells.length >0) {
+    while(todo_cells.length >0 && total_count < color_max) {
         let next = todo_cells.shift(); 
-        set_color_to_cell(next, cat, adjacent[next], colors, leaves);
+        set_color_to_cell(next, cat, adjacent[next], colors, leaves)
+        total_count += 1;
+        console.log('after ' + todo_cells);
     }
 }
 
 function set_color_to_cell(current, cat, adjs, colors, leaves){
     if (! (current in colors)) {
+        console.log('processing ' + current);
         let new_c = get_diff_color(current, adjs, colors);
         colors [current] = new_c;
         leaves[current].classList.add( cat + '_' + new_c);
-        var i;
-        for(i=0;i<adjs.length;i++) {
+        for(var i=0;i<adjs.length;i++) {
             let neighbor = adjs[i];
             colored_adjacents[neighbor].push(current);
+        }
+        for(var i=0;i<adjs.length;i++) {
+            let neighbor = adjs[i];
             if(!(neighbor in colors)){
                 let calen = colored_adjacents[neighbor].length;
+                console.log(neighbor + ' has ' + calen + ' colored adjacents.');
                 if (calen > 2) {
+                    console.log('put ' + neighbor + ' to the beginning of todo_cells - 3');
                     todo_cells.unshift(neighbor);
                 } else if (calen == 2){
                     let c0 = colored_adjacents[neighbor][0];
-                    if (colored_adjacents[neighbor][1] in adjacent[c0]) {
+                    if( neighbor == 3 ) {
+                        console.log('----- cell 3 coloured => ' + colored_adjacents[neighbor]); 
+                        console.log('----- cell 0 neighbours => ' + adjacent[c0]); 
+                        let c1 = colored_adjacents[neighbor][1];
+                        console.log('----- c1 = ' + c1);
+                        console.log(c1 in adjacent[c0]);
+                    }
+                    if ( adjacent[c0].indexOf(colored_adjacents[neighbor][1]) >=0 ) {
+                        console.log('put ' + neighbor + ' to the beginning of todo_cells - 2');
                         todo_cells.unshift(neighbor);
                     } 
-                }
-                if (!(neighbor in todo_cells)){
+                } else {
+                    console.log('add ' + neighbor + ' to the end of todo_cells');
                     todo_cells.push(neighbor);
                 }
             }
@@ -67,8 +84,7 @@ function get_diff_color(current, adjs, colors) {
 }
 
 function is_color_different(current, new_c, adjs, colors){
-    var i;
-    for( i=0; i< adjs.length; i++) {
+    for(var i=0; i< adjs.length; i++) {
         if (adjs[i]  in colors) {
             if ( colors[adjs[i]] == new_c ) return false;
         }
