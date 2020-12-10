@@ -17,6 +17,7 @@
 
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="protein_cath.js"></script>
     <script>
       (function() {
         d3.json("protein_cath.json", function(error, json) {
@@ -38,7 +39,9 @@
             theme:'light',
             interactive: true, 
             appendTo: document.body,
-	        });
+          });
+          
+          set_leaf_color();
         });
       }());
     </script>

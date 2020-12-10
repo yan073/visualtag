@@ -1072,14 +1072,7 @@ d3.chart("hierarchy").extend("treemap", {
  
   initialize : function() {
     var chart = this;
-    var colordef = d3.select(".abcdef");
-    console.log(colordef);
-    var defc1 = colordef[0]['color'];
-    console.log(defc1);
-    var defc2 = colordef['color'];
-    console.log(defc2);
-    chart.extColorCount = 3;
-    
+  
     chart.d3.layout = d3.layout.treemap();
 
     chart.layer("base", chart.layers.base, {
@@ -1135,20 +1128,7 @@ d3.chart("hierarchy").extend("treemap", {
 
   getLeafClass : function(d) { 
     let cat = d.parent.name.charAt(0);//'1', '2', '3', '4', 'u'
-    if (cat != null) {
-      var categoryName = d.name;
-      if (cat != 'u') {
-        categoryName = d.parent.name;
-        if (categoryName.length > 2) {
-          let index = categoryName.indexOf('.', 2);
-          if(index > 0) {
-            categoryName = categoryName.substring(0, index);
-          }
-        }
-      }
-      return "leafc" + cat + "_" + this.stringToIntHash(categoryName, this.extColorCount+1, 1);
-    }
-    return "";
+    return cat != null ? "leafc" + cat : "";
   },
 
   stringToIntHash: function(str, upperbound, lowerbound) {
