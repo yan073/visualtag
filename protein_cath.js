@@ -2,8 +2,9 @@ var todo_cells;
 var high_priority_todo;
 //var colored_adjacents;
 var adjacent;
-var colors;
+var colormap;
 var adjacent_colors;
+var colored;
 
 let num_color_space = 3;
 
@@ -17,9 +18,10 @@ function set_color_for_cat(cat){
     high_priority_todo = [];
     //colored_adjacents = {};
     adjacent = {};
-    colors = {};
+    colormap = {};
     adjacent_colors = {};
-    
+    colored =[];
+
     let leaves = document.getElementsByClassName(cat);
     for(i = 0; i< leaves.length; i++) {
         adjacent[i] = [];
@@ -45,30 +47,41 @@ function set_color_for_cat(cat){
 }
 
 function set_color_to_cell(current, cat, leaves){
-    if (! (current in colors)) {
+    if (colored.indexOf(current)<0) {
         let level2 = leaves[current].getAttribute('level2');
         console.log('----- coloring ' + level2 + ', for cell ' + current);
         let adjs = adjacent[current];
-        let new_c = get_diff_color(current, adjs, colors);
-        colors [current] = new_c;
+        let new_c = get_diff_color(current, adjs);
+        colored.push(current);
+        colormap [current] = new_c;
         let colorclass = cat + '_' + new_c;
         leaves[current].classList.add( colorclass );
-        process_neighbor_after_coloring(current);
-
-        console.log('---- coloring ' + level2);
-        if (level2 != null && level2.length > 0) {
-            for(var i = 1; i< leaves.length - 1; i++) {
-                if (i!= current) {
-                    if (level2 == leaves[i].getAttribute('level2')) {
-                        colors [i] = new_c;
-                        leaves[i].classList.add( colorclass );
-                        process_neighbor_after_coloring(i);
-                    }
-                }
+        let siblings = get_cells_in_same_level2(level2, leaves);
+        console.log('found ' + siblings.length + ' cells in the same category ' + level2);        
+        for(var i=0;i<siblings.length;i++){
+            let next = siblings[i];
+            if (next != current) {
+                colormap[next] = new_c;
+                colored.push(next);
+                leaves[next].classList.add( colorclass );
             }
         }
-
+        for(var i=0;i<siblings.length;i++){
+            process_neighbor_after_coloring(siblings[i], new_c);
+        }
     }
+}
+
+function get_cells_in_same_level2(level2, leaves){
+    let samel = [];
+    if (level2 != null && level2.length >0) {
+        for(var i = 0; i< leaves.length; i++) {
+            if (level2 == leaves[i].getAttribute('level2')) {
+                samel.push(i);
+            }
+        }
+    }
+    return samel;
 }
 
 function process_neighbor_after_coloring(current, color){
@@ -82,7 +95,7 @@ function process_neighbor_after_coloring(current, color){
 
     for(var i=0;i<adjs.length;i++) {
         let neighbor = adjs[i];
-        if(!(neighbor in colors)){
+        if(colored.indexOf(neighbor) < 0){
             if (adjacent_colors[neighbor].length >= 2) {
                 if(high_priority_todo.indexOf(neighbor) <0) {
                     high_priority_todo.push(neighbor);
@@ -98,19 +111,19 @@ function process_neighbor_after_coloring(current, color){
 
 }
 
-function get_diff_color(current, adjs, colors) {
+function get_diff_color(current, adjs) {
     for(var i=1; i<=num_color_space; i++) {
-        if (is_color_different(current, i, adjs, colors)) {
+        if (is_color_different(current, i, adjs)) {
             return i;
         }
     }
     return Math.floor(Math.random() * Math.floor(num_color_space)) + 1;
 }
 
-function is_color_different(current, new_c, adjs, colors){
+function is_color_different(current, new_c, adjs){
     for(var i=0; i< adjs.length; i++) {
-        if (adjs[i]  in colors) {
-            if ( colors[adjs[i]] == new_c ) return false;
+        if (adjs[i]  in colormap) {
+            if ( colormap[adjs[i]] == new_c ) return false;
         }
     }
     return true;
