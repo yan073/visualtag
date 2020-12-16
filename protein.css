@@ -110,7 +110,7 @@ html {
 
   .leafc1_1 rect{ 
     stroke: var(--c1_label_border);
-    fill: var(--c1_light_fill);
+    fill: var(--c1_dark_fill);
   }
   
   .leafc1_2 rect { 
@@ -125,12 +125,12 @@ html {
 
   .leafc1_4 rect { 
     stroke: var(--c1_label_border);
-    fill: var(--c1_dark_fill);
+    fill: var(--c1_light_fill);
   }  
 
   .leafc2_1 rect { 
     stroke: var(--c2_label_border);
-    fill: var(--c2_light_fill);
+    fill: var(--c2_dark_fill);
   }
 
   .leafc2_2 rect { 
@@ -145,7 +145,7 @@ html {
 
   .leafc2_4 rect { 
     stroke: var(--c2_label_border);
-    fill: var(--c2_dark_fill);
+    fill: var(--c2_light_fill);
   }
 
   .leafc3_1 rect { 

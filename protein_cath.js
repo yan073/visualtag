@@ -5,7 +5,7 @@ var colormap;
 var adjacent_colors;
 var colored;
 
-let num_color_space = 3;
+let num_color_space = 4;
 
 function set_leaf_color() {
     let cats = ["leafc1", "leafc2", "leafc3", "leafc4","leafcu"];
@@ -124,7 +124,10 @@ function process_neighbor_after_coloring(current, color, level2, leaves){
             if (sibl2 == null) {
                 sibl2 = elem.getAttribute('transform');
             }
-            if (adjacent_colors[sibl2].length >= 2) {
+            if (adjacent_colors[sibl2].length >= 3) {
+                high_priority_todo.unshift(neighbor);
+            }
+            else if (adjacent_colors[sibl2].length == 2) {
                 if(high_priority_todo.indexOf(neighbor) <0) {
                     high_priority_todo.push(neighbor);
                 }
