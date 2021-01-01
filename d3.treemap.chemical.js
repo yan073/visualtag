@@ -1087,11 +1087,10 @@ d3.chart("hierarchy").extend("treemap", {
 
       events: {
         "enter": function() {
-          //this.classed( "leaf", function(d) { return d.isLeaf; });
           this.attr("class", function(d) { 
             var classvar = "cell";
             if (d.isLeaf){ 
-              classvar = classvar + " leaf"; //+ chart.getLeafClass(d);
+              classvar = classvar + " leaf"; 
             }
             return classvar; 
           });
@@ -1099,16 +1098,6 @@ d3.chart("hierarchy").extend("treemap", {
           this.attr("data-cluster", function(d) { 
               if (d.isLeaf) {
                 return d.parent.name;
-                /*
-                let cluster = d.parent.name;
-                if (cluster != 'unknown') {
-                  let index = cluster.indexOf('.', 2);
-                  if(index > 0) {
-                    return cluster.substring(index+1);
-                  }      
-                }
-                return cluster[0];
-                */
               }
               return null;
           });
@@ -1137,7 +1126,7 @@ d3.chart("hierarchy").extend("treemap", {
     let cluster = d.parent.name;
     var content = '<p><strong>' + d.compound + '</strong></p>';
     if ('pubchem_id' in d) { 
-      content = content + '<p><strong>'
+      content = content + '<p><strong>';
       if (cluster != 'unknown') {
         content = content + cluster + ', ';
       }  
@@ -1145,18 +1134,7 @@ d3.chart("hierarchy").extend("treemap", {
     }
     return content;
   },
-/*
-  getLeafClass : function(d) { 
-    let cluster = d.parent.name;
-    if (cluster.charAt(0) == 'u'){
-      return "leafcu";
-    }
-    let index = cluster.lastIndexOf('.');
-    if (index > 0) {
-      return "leafc" + cluster.substring(index+1);
-    }
-  },
-*/
+
   stringToIntHash: function(str, upperbound, lowerbound) {
     let result = 0;
     for (let i = 0; i < str.length; i++) {
