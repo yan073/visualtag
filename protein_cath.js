@@ -15,25 +15,12 @@ function set_leaf_color() {
 function set_color_for_cat(cat){
     todo_cells = [];
     high_priority_todo = [];
-    adjacent = {};
     colormap = {};
     adjacent_colors = {};
     colored =[];
 
     let leaves = document.getElementsByClassName(cat);
-    for(i = 0; i< leaves.length; i++) {
-        adjacent[i] = [];
-    }
-    // find the adjacents for every cell
-    for(var i = 0; i< leaves.length - 1; i++) {
-        let rect1 = leaves[i].getBoundingClientRect();
-        for(var j=i+1; j < leaves.length; j++ ) {
-            if (is_adjacent(rect1, leaves[j].getBoundingClientRect() )){
-                adjacent[i].push(j);
-                adjacent[j].push(i);
-            }
-        }
-    }
+    adjacent = find_adjacents(leaves);
 
     set_color_to_cell(0, cat, leaves);
     while( (todo_cells.length >0 || high_priority_todo.length >0)) {
