@@ -31,18 +31,16 @@ function set_color_to_cell(current, cat, leaves){
         if (cluster == null) {
             cluster = leaves[current].getAttribute('transform');
         }
-        /*
+        var new_c;
         if (cluster == 'unknown') {
-            let colorclass = 'leafcu_1';
+            new_c = 5;
         }
-        */
-        console.log('cluster =' + cluster);
-        let new_c = get_diff_color(adjacent_colors[cluster]);
-        console.log('new_c =' + new_c);
+        else {
+            new_c = get_diff_color(adjacent_colors[cluster]);
+        }
         colored.push(current);
         colormap [current] = new_c;
         let colorclass = cat + 'c1_' + new_c;
-        console.log('add colour class: ' + new_c);
         leaves[current].classList.add( colorclass );
         let siblings = get_cells_in_same_cluster(cluster, leaves);
         for(var i=0;i<siblings.length;i++){

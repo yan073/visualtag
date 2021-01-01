@@ -37,19 +37,9 @@ html {
   .leafc1_4 text { 
     fill: var(--c1_label_border);
   }
-
-  .leafcu_1 text { 
-    fill: var(--c5_label_border);
+  .leafc1_5 text { 
+    fill: var(--c1_label_border);
   }
-  .leafcu_2 text { 
-    fill: var(--c5_label_border);
-  }      
-  .leafcu_3 text { 
-    fill: var(--c5_label_border);
-  }  
-  .leafcu_4 text { 
-    fill: var(--c5_label_border);
-  } 
 
   .leafc1_1 rect{ 
     stroke: var(--c1_label_border);
@@ -71,24 +61,8 @@ html {
     fill: var(--c1_light_fill);
   }  
 
-  .leafcu_1 rect { 
+  .leafc1_5 rect { 
     stroke: var(--c5_label_border);
     fill: var(--c5_fill);
   }
-
-  .leafcu_2 rect { 
-    stroke: var(--c5_label_border);
-    fill: var(--c5_fill);
-  }
-
-  .leafcu_3 rect { 
-    stroke: var(--c5_label_border);
-    fill: var(--c5_fill);
-  }
-
-  .leafcu_4 rect { 
-    stroke: var(--c5_label_border);
-    fill: var(--c5_fill);
-  }
-
   
