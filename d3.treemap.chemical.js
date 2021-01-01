@@ -1103,7 +1103,7 @@ d3.chart("hierarchy").extend("treemap", {
           });
   
           this.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-          this.attr("data-tippy-content", d => d.isLeaf ? chart.getLeafContent(d) : null);
+          this.attr("data-tippy-content", d => d.isLeaf ? d.tooltip : null);
           
           this.append("rect")
             .attr("width", function(d) { return d.dx; })
@@ -1120,19 +1120,6 @@ d3.chart("hierarchy").extend("treemap", {
         },
       }
     });
-  },
-
-  getLeafContent : function(d) { 
-    let cluster = d.parent.name;
-    var content = '<p><strong>' + d.compound + '</strong></p>';
-    if ('pubchem_id' in d) { 
-      content = content + '<p><strong>';
-      if (cluster != 'unknown') {
-        content = content + cluster + ', ';
-      }  
-      content = content + 'pubchem' + d.pubchem_id + '</strong></p>';
-    }
-    return content;
   },
 
   stringToIntHash: function(str, upperbound, lowerbound) {
