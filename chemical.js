@@ -1,6 +1,6 @@
+var adjacent;
 var todo_cells;
 var high_priority_todo;
-var adjacent;
 var colormap;
 var adjacent_colors;
 var colored;
@@ -8,39 +8,41 @@ var colored;
 let num_color_space = 4;
 
 function set_leaf_color() {
-    let cats = ["leafc1", "leafc2", "leafc3", "leafc4","leafcu"];
-    cats.forEach(c => set_color_for_cat(c));
-}
-
-function set_color_for_cat(cat){
     todo_cells = [];
-    high_priority_todo = [];
+    high_priority_todo = [];    
     colormap = {};
     adjacent_colors = {};
     colored =[];
 
-    let leaves = document.getElementsByClassName(cat);
+    let leaves = document.querySelectorAll('[data-cluster]');
+    console.log('found leaves: ' + leaves.length );
     adjacent = find_adjacents(leaves);
 
-    set_color_to_cell(0, cat, leaves);
+    set_color_to_cell(0, 'leaf', leaves);
     while( (todo_cells.length >0 || high_priority_todo.length >0)) {
         let next = high_priority_todo.length >0 ? high_priority_todo.shift() : todo_cells.shift(); 
-        set_color_to_cell(next, cat, leaves)
+        set_color_to_cell(next, 'leaf', leaves)
     }
 }
 
 function set_color_to_cell(current, cat, leaves){
     if (colored.indexOf(current)<0) {
-        var level2 = leaves[current].getAttribute('level2');
-        if (level2 == null) {
-            level2 = leaves[current].getAttribute('transform');
+        var cluster = leaves[current].getAttribute('data-cluster');
+        if (cluster == null) {
+            cluster = leaves[current].getAttribute('transform');
         }
-        let new_c = get_diff_color(adjacent_colors[level2]);
+        var new_c;
+        if (cluster == 'unknown') {
+            new_c = 5;
+        }
+        else {
+            new_c = get_diff_color(adjacent_colors[cluster]);
+        }
         colored.push(current);
         colormap [current] = new_c;
-        let colorclass = cat + '_' + new_c;
+        let colorclass = cat + 'c1_' + new_c;
         leaves[current].classList.add( colorclass );
-        let siblings = get_cells_in_same_level2(level2, leaves);
+        let siblings = get_cells_in_same_cluster(cluster, leaves);
         for(var i=0;i<siblings.length;i++){
             let next = siblings[i];
             if (next != current) {
@@ -50,20 +52,20 @@ function set_color_to_cell(current, cat, leaves){
             }
         }
         for(var i=0;i<siblings.length;i++){
-            process_neighbor_after_coloring(siblings[i], new_c, level2, leaves);
+            process_neighbor_after_coloring(siblings[i], new_c, cluster, leaves);
         }
     }
 }
 
-function get_cells_in_same_level2(level2, leaves){
+function get_cells_in_same_cluster(cluster, leaves){
     let samel = [];
-    if (level2 != null && level2.length >0) {
+    if (cluster != null && cluster.length >0) {
         for(var i = 0; i< leaves.length; i++) {
-            var nl = leaves[i].getAttribute('level2');
+            var nl = leaves[i].getAttribute('data-cluster');
             if (nl==null) {
                 nl = leaves[i].getAttribute('transform');
             }
-            if (level2 == nl) {
+            if (cluster == nl) {
                 samel.push(i);
             }
         }
@@ -71,16 +73,16 @@ function get_cells_in_same_level2(level2, leaves){
     return samel;
 }
 
-function process_neighbor_after_coloring(current, color, level2, leaves){
+function process_neighbor_after_coloring(current, color, cluster, leaves){
     let adjs = adjacent[current];
     for(var i=0;i<adjs.length;i++) {
         let neighbor = adjs[i];
         let elem = leaves[neighbor];
-        var sibl2 = elem.getAttribute('level2');
+        var sibl2 = elem.getAttribute('data-cluster');
         if (sibl2 == null) {
             sibl2 = elem.getAttribute('transform');
         }
-        if (sibl2 != level2) {
+        if (sibl2 != cluster) {
             if (!(sibl2 in adjacent_colors)) {
                 adjacent_colors[sibl2] = [];
             }
@@ -94,7 +96,7 @@ function process_neighbor_after_coloring(current, color, level2, leaves){
         let neighbor = adjs[i];
         if(colored.indexOf(neighbor) < 0){
             let elem = leaves[neighbor];
-            var sibl2 = elem.getAttribute('level2');
+            var sibl2 = elem.getAttribute('data-cluster');
             if (sibl2 == null) {
                 sibl2 = elem.getAttribute('transform');
             }
@@ -115,3 +117,4 @@ function process_neighbor_after_coloring(current, color, level2, leaves){
     }
 
 }
+

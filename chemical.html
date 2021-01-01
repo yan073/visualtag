@@ -3,12 +3,12 @@
   <head>
       <!-- http://bl.ocks.org/annaghi/5d24b37ebe077d4e919f -->
     <meta charset="utf-8">
-    <title>Proteins in Trials</title>
+    <title>Chemical in Trials</title>
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light.css" />
-    <link rel="stylesheet" href="protein.css">
+    <link rel="stylesheet" href="chemical.css">
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="https://rawgit.com/misoproject/d3.chart/master/d3.chart.min.js"></script>
-    <script src="d3.chart.layout.hierarchy.js"></script>
+    <script src="d3.treemap.chemical.js"></script>
 
   </head>
   <body>
@@ -18,10 +18,10 @@
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
     <script src="visual_common.js"></script>
-    <script src="protein_cath.js"></script>
+    <script src="chemical.js"></script>
     <script>
       (function() {
-        d3.json("protein_cath.json", function(error, json) {
+        d3.json("chem_cluster.json", function(error, json) {
 
           var treemap = d3.select("#vis").append("svg")
             .chart("treemap")
