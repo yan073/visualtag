@@ -50,7 +50,6 @@ function stack_coloring_option(current, colouring_option){
 
 function rollback_to_diffrent_coloring_option(){
     var context = coloring_option_stack.pop();
-    console.log('rollback to other coloring option, for cell ' + context['current']);
     color_option = context['coloring_option'];
     todo_cells = context['todo_cells'];
     high_priority_todo = context['high_priority_todo'];
@@ -85,10 +84,8 @@ function set_color_to_cell(current, leaves){
                     }
                 }
                 else {
-                    console.log('Could not find a colour different from adjacent cells.');
                     if (coloring_option_stack.length > 0) {
                         if (coloring_option_stack.length <= 1) {
-                            console.log('All the options have been tried out.');
                             all_tried = true;                        
                         }
                         rollback_to_diffrent_coloring_option();
