@@ -21,24 +21,6 @@ function find_adjacents(leaves) {
     return adjacent;
 }
 
-/*
-Get all the colours different from existing adjacent colours.
-It could be empty. 
-*/
-function get_diff_color(adjcolors) {
-    if (adjcolors === undefined) {
-        return Array.from({length: num_color_space}, (_, i) => i + 1);
-    } else {
-        diff = []
-        for(var i=1; i<=num_color_space; i++) {
-            if (adjcolors.indexOf(i) <0) {
-                diff.push(i);
-            }
-        }
-        return diff;
-    }
-}
-
 function is_color_different(current, new_c, adjs){
     for(var i=0; i< adjs.length; i++) {
         if (adjs[i]  in colormap) {
