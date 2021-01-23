@@ -20,13 +20,14 @@ function set_leaf_color() {
     let leaves = document.querySelectorAll('[data-cluster]');
     adjacent = find_adjacents(leaves);
 
-    set_color_to_cell(0, 'leaf', leaves);
+    set_color_to_cell(0, leaves);
     while( (todo_cells.length >0 || high_priority_todo.length >0)) {
         let next = high_priority_todo.length >0 ? high_priority_todo.shift() : todo_cells.shift(); 
-        console.log(' set color for cell ' + next );
-        set_color_to_cell(next, 'leaf', leaves)
+        set_color_to_cell(next, leaves)
     }
-    console.log('option stack length = ' + coloring_option_stack.length);
+    for(var i=0; i<leaves.length; i++){
+        leaves[i].classList.add( 'leafc1_' + colormap[i] );        
+    }
 }
 
 function stack_coloring_option(current, colouring_option){
@@ -58,7 +59,7 @@ function rollback_to_diffrent_coloring_option(){
     adjacent_colors = context['adjacent_colors'];
 }
 
-function set_color_to_cell(current, cat, leaves){
+function set_color_to_cell(current, leaves){
     if (colored.indexOf(current)<0) {
         var cluster = leaves[current].getAttribute('data-cluster');
         if (cluster == null) {
@@ -102,15 +103,12 @@ function set_color_to_cell(current, cat, leaves){
         }
         colored.push(current);
         colormap [current] = new_c;
-        let colorclass = cat + 'c1_' + new_c;
-        leaves[current].classList.add( colorclass );
         let siblings = get_cells_in_same_cluster(cluster, leaves);
         for(var i=0;i<siblings.length;i++){
             let next = siblings[i];
             if (next != current) {
                 colormap[next] = new_c;
                 colored.push(next);
-                leaves[next].classList.add( colorclass );
             }
         }
         for(var i=0;i<siblings.length;i++){
