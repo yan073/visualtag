@@ -4,8 +4,10 @@ var high_priority_todo;
 var colormap;
 var adjacent_colors;
 var colored;
-
+var coloring_option_stack;
 let num_color_space = 4;
+var color_option = -1;
+var all_tried = false;
 
 function set_leaf_color() {
     todo_cells = [];
@@ -13,42 +15,97 @@ function set_leaf_color() {
     colormap = {};
     adjacent_colors = {};
     colored =[];
+    coloring_option_stack = [];
 
     let leaves = document.querySelectorAll('[data-cluster]');
-    console.log('found leaves: ' + leaves.length );
     adjacent = find_adjacents(leaves);
 
-    set_color_to_cell(0, 'leaf', leaves);
+    set_color_to_cell(0, leaves);
     while( (todo_cells.length >0 || high_priority_todo.length >0)) {
         let next = high_priority_todo.length >0 ? high_priority_todo.shift() : todo_cells.shift(); 
-        set_color_to_cell(next, 'leaf', leaves)
+        set_color_to_cell(next, leaves)
+    }
+    for(var i=0; i<leaves.length; i++){
+        leaves[i].classList.add( 'leafc1_' + colormap[i] );        
     }
 }
 
-function set_color_to_cell(current, cat, leaves){
+function stack_coloring_option(current, colouring_option){
+    var context = {}
+    context['todo_cells'] = [...todo_cells];
+    context['high_priority_todo'] = [...high_priority_todo];
+    context['colored'] = [...colored];
+    context['colormap'] = {};
+    for(var key in colormap) {
+        context['colormap'][key] = colormap[key];
+    }
+    context['adjacent_colors'] = {};
+    for(var key in adjacent_colors) {
+        context['adjacent_colors'][key] = [...adjacent_colors[key]];
+    }
+    context['current'] = current;
+    context['coloring_option'] = colouring_option;
+    coloring_option_stack.push(context);
+}
+
+function rollback_to_diffrent_coloring_option(){
+    var context = coloring_option_stack.pop();
+    color_option = context['coloring_option'];
+    todo_cells = context['todo_cells'];
+    high_priority_todo = context['high_priority_todo'];
+    colored = context['colored'];
+    colormap = context['colormap'];
+    adjacent_colors = context['adjacent_colors'];
+}
+
+function set_color_to_cell(current, leaves){
     if (colored.indexOf(current)<0) {
         var cluster = leaves[current].getAttribute('data-cluster');
         if (cluster == null) {
             cluster = leaves[current].getAttribute('transform');
         }
         var new_c;
-        if (cluster == 'unknown') {
-            new_c = 5;
+        if(color_option > 0) {
+            new_c = color_option;
+            color_option = -1;
         }
         else {
-            new_c = get_diff_color(adjacent_colors[cluster]);
+            if (cluster == 'unknown') {
+                new_c = 5;
+            }
+            else {
+                let diffcs = get_diff_color(adjacent_colors[cluster]);
+                if (diffcs.length > 0) {
+                    new_c = diffcs[0];
+                    if ( !all_tried ) {
+                        for(var i = 0; i<diffcs.length ; i++) {
+                            stack_coloring_option(current, diffcs[i]);
+                        }
+                    }
+                }
+                else {
+                    if (coloring_option_stack.length > 0) {
+                        if (coloring_option_stack.length <= 1) {
+                            all_tried = true;                        
+                        }
+                        rollback_to_diffrent_coloring_option();
+                        return;
+                    }
+                    else {
+                        console.log('Nothing in the option stack.');
+                        new_c = 1;
+                    }
+                }
+            }
         }
         colored.push(current);
         colormap [current] = new_c;
-        let colorclass = cat + 'c1_' + new_c;
-        leaves[current].classList.add( colorclass );
         let siblings = get_cells_in_same_cluster(cluster, leaves);
         for(var i=0;i<siblings.length;i++){
             let next = siblings[i];
             if (next != current) {
                 colormap[next] = new_c;
                 colored.push(next);
-                leaves[next].classList.add( colorclass );
             }
         }
         for(var i=0;i<siblings.length;i++){
@@ -118,3 +175,20 @@ function process_neighbor_after_coloring(current, color, cluster, leaves){
 
 }
 
+/*
+Get all the colours different from existing adjacent colours.
+It could be empty. 
+*/
+function get_diff_color(adjcolors) {
+    if (adjcolors === undefined) {
+        return Array.from({length: num_color_space}, (_, i) => i + 1);
+    } else {
+        diff = []
+        for(var i=1; i<=num_color_space; i++) {
+            if (adjcolors.indexOf(i) <0) {
+                diff.push(i);
+            }
+        }
+        return diff;
+    }
+}

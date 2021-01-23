@@ -115,3 +115,16 @@ function process_neighbor_after_coloring(current, color, level2, leaves){
     }
 
 }
+
+function get_diff_color(adjcolors) {
+    if (adjcolors === undefined) {
+        return 1;
+    } else {
+        for(var i=1; i<=num_color_space; i++) {
+            if (adjcolors.indexOf(i) <0) {
+                return i;
+            }
+        }
+        return Math.floor(Math.random() * Math.floor(num_color_space)) + 1;
+    }
+}

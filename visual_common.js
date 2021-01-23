@@ -4,29 +4,21 @@ function find_adjacents(leaves) {
         adjacent[i] = [];
     }    
     for(var i = 0; i< leaves.length - 1; i++) {
-        let rect1 = leaves[i].getBoundingClientRect();
-        for(var j=i+1; j < leaves.length; j++ ) {
-            if (is_adjacent(rect1, leaves[j].getBoundingClientRect() )){
-                adjacent[i].push(j);
-                adjacent[j].push(i);
+        let rectElem = leaves[i].firstElementChild;
+        if (rectElem) {
+            let rect1 = rectElem.getBoundingClientRect();
+            for(var j=i+1; j < leaves.length; j++ ) {
+                let rect2Elem = leaves[j].firstElementChild;
+                if (rect2Elem) {
+                    if (is_adjacent(rect1, rect2Elem.getBoundingClientRect() )){
+                        adjacent[i].push(j);
+                        adjacent[j].push(i);
+                    }
+                }
             }
         }
     }
     return adjacent;
-}
-
-
-function get_diff_color(adjcolors) {
-    if (adjcolors === undefined) {
-        return 1;
-    } else {
-        for(var i=1; i<=num_color_space; i++) {
-            if (adjcolors.indexOf(i) <0) {
-                return i;
-            }
-        }
-        return Math.floor(Math.random() * Math.floor(num_color_space)) + 1;
-    }
 }
 
 function is_color_different(current, new_c, adjs){
