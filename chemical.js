@@ -4,7 +4,7 @@ var high_priority_todo;
 var colormap;
 var adjacent_colors;
 var colored;
-
+var coloring_option_stack;
 let num_color_space = 4;
 
 function set_leaf_color() {
@@ -13,9 +13,9 @@ function set_leaf_color() {
     colormap = {};
     adjacent_colors = {};
     colored =[];
+    coloring_option_stack = [];
 
     let leaves = document.querySelectorAll('[data-cluster]');
-    console.log('found leaves: ' + leaves.length );
     adjacent = find_adjacents(leaves);
 
     set_color_to_cell(0, 'leaf', leaves);
@@ -23,6 +23,25 @@ function set_leaf_color() {
         let next = high_priority_todo.length >0 ? high_priority_todo.shift() : todo_cells.shift(); 
         set_color_to_cell(next, 'leaf', leaves)
     }
+    console.log('option stack length = ' + coloring_option_stack.length);
+}
+
+function stack_coloring_option(current, colouring_option){
+    var context = {}
+    context['todo_cells'] = [...todo_cells];
+    context['high_priority_todo'] = [...high_priority_todo];
+    context['colored'] = [...colored];
+    context['colormap'] = {};
+    for(var key in colormap) {
+        context['colormap'][key] = colormap[key];
+    }
+    context['adjacent_colors'] = {};
+    for(var key in adjacent_colors) {
+        context['adjacent_colors'][key] = [...adjacent_colors[key]];
+    }
+    context['current'] = current;
+    context['colouring_option'] = colouring_option;
+    coloring_option_stack.push(context);
 }
 
 function set_color_to_cell(current, cat, leaves){
@@ -36,7 +55,17 @@ function set_color_to_cell(current, cat, leaves){
             new_c = 5;
         }
         else {
-            new_c = get_diff_color(adjacent_colors[cluster]);
+            let diffcs = get_diff_color(adjacent_colors[cluster]);
+            if (diffcs.length > 0) {
+                new_c = diffcs[0];
+                for(var i = 0; i<diffcs.length ; i++) {
+                    stack_coloring_option(current, diffcs[i]);
+                }
+            }
+            else {
+                console.log('Could not find a colour different from adjacent cells.');
+                new_c = 1;
+            }
         }
         colored.push(current);
         colormap [current] = new_c;

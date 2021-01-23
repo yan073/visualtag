@@ -21,17 +21,21 @@ function find_adjacents(leaves) {
     return adjacent;
 }
 
-
+/*
+Get all the colours different from existing adjacent colours.
+It could be empty. 
+*/
 function get_diff_color(adjcolors) {
     if (adjcolors === undefined) {
-        return 1;
+        return Array.from({length: num_color_space}, (_, i) => i + 1);
     } else {
+        diff = []
         for(var i=1; i<=num_color_space; i++) {
             if (adjcolors.indexOf(i) <0) {
-                return i;
+                diff.push(i);
             }
         }
-        return Math.floor(Math.random() * Math.floor(num_color_space)) + 1;
+        return diff;
     }
 }
 
