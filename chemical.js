@@ -6,6 +6,8 @@ var adjacent_colors;
 var colored;
 var coloring_option_stack;
 let num_color_space = 4;
+var color_option = -1;
+var all_tried = false;
 
 function set_leaf_color() {
     todo_cells = [];
@@ -21,6 +23,7 @@ function set_leaf_color() {
     set_color_to_cell(0, 'leaf', leaves);
     while( (todo_cells.length >0 || high_priority_todo.length >0)) {
         let next = high_priority_todo.length >0 ? high_priority_todo.shift() : todo_cells.shift(); 
+        console.log(' set color for cell ' + next );
         set_color_to_cell(next, 'leaf', leaves)
     }
     console.log('option stack length = ' + coloring_option_stack.length);
@@ -40,8 +43,19 @@ function stack_coloring_option(current, colouring_option){
         context['adjacent_colors'][key] = [...adjacent_colors[key]];
     }
     context['current'] = current;
-    context['colouring_option'] = colouring_option;
+    context['coloring_option'] = colouring_option;
     coloring_option_stack.push(context);
+}
+
+function rollback_to_diffrent_coloring_option(){
+    var context = coloring_option_stack.pop();
+    console.log('rollback to other coloring option, for cell ' + context['current']);
+    color_option = context['coloring_option'];
+    todo_cells = context['todo_cells'];
+    high_priority_todo = context['high_priority_todo'];
+    colored = context['colored'];
+    colormap = context['colormap'];
+    adjacent_colors = context['adjacent_colors'];
 }
 
 function set_color_to_cell(current, cat, leaves){
@@ -51,20 +65,39 @@ function set_color_to_cell(current, cat, leaves){
             cluster = leaves[current].getAttribute('transform');
         }
         var new_c;
-        if (cluster == 'unknown') {
-            new_c = 5;
+        if(color_option > 0) {
+            new_c = color_option;
+            color_option = -1;
         }
         else {
-            let diffcs = get_diff_color(adjacent_colors[cluster]);
-            if (diffcs.length > 0) {
-                new_c = diffcs[0];
-                for(var i = 0; i<diffcs.length ; i++) {
-                    stack_coloring_option(current, diffcs[i]);
-                }
+            if (cluster == 'unknown') {
+                new_c = 5;
             }
             else {
-                console.log('Could not find a colour different from adjacent cells.');
-                new_c = 1;
+                let diffcs = get_diff_color(adjacent_colors[cluster]);
+                if (diffcs.length > 0) {
+                    new_c = diffcs[0];
+                    if ( !all_tried ) {
+                        for(var i = 0; i<diffcs.length ; i++) {
+                            stack_coloring_option(current, diffcs[i]);
+                        }
+                    }
+                }
+                else {
+                    console.log('Could not find a colour different from adjacent cells.');
+                    if (coloring_option_stack.length > 0) {
+                        if (coloring_option_stack.length <= 1) {
+                            console.log('All the options have been tried out.');
+                            all_tried = true;                        
+                        }
+                        rollback_to_diffrent_coloring_option();
+                        return;
+                    }
+                    else {
+                        console.log('Nothing in the option stack.');
+                        new_c = 1;
+                    }
+                }
             }
         }
         colored.push(current);
