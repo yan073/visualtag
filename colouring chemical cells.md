@@ -1,4 +1,4 @@
-# Algorithm to Colour Chemical Cells in the Chart [chemical.html](https://yan073.github.io/visualtag/chemical.html)
+# Using the Four Colour Theorem in a Tree Map [chemical.html](https://yan073.github.io/visualtag/chemical.html)
 
 ## Before Colouring
 The cells has been created by d3.treemap.chemical.js, with the following format:
