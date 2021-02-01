@@ -55,6 +55,12 @@ The leaf cells are labeled with one of colouring class (from ```leafc1_1``` to `
 </svg>
 ```
 
+## Basic Ideas
+When picking one colour for one cell, if there are other options, save each of the other option into a checkpoint, put those checkpoints into a stack, colouring all the cells in the same cluster with the same colour, calculating the amount of different colours for each adjacent un-coloured cells. <br/>If the amount is three, then there is only one choice left for this cell, so put it into the high priority queue. If the amount is two, put it into the beginning of the low priority queue. If the amount is one, put it into the end of the low priority queue. 
+<br/>
+If all the four colours have been assigned adjacent to a cell, the colouring proces is stuck. Rollback all the colouring up to the previous checkpoint saved in the stack. Start with the option saved in that checkpoint and continue the colouring process.
+<br/>To avoid non-stop repetitive colouring, a circuit breaker is created to remember if all the options have been tried out. 
+
 ## Global Variables
 <ul>
 <li>adjacent: dictionary of adjacent cells(a cell index -> array of all cell indexes adjacent to that cell)</li>
@@ -67,11 +73,6 @@ The leaf cells are labeled with one of colouring class (from ```leafc1_1``` to `
 <li>coloring_option_stack: stack of possible colour options reseerved to try laster.</li>
 <li>all_tried: a circuit breaker to avoid non-stop repeative searching for a suitable solution. The initial value is false.</li>
 </ul>
-
-## Basic Ideas
-When picking one colour for one cell, if there are other options, save each of the other option into a checkpoint, put those checkpoints into a stack, colouring all the cells in the same cluster with the same colour, calculating the amount of different colours for each adjacent un-coloured cells. If the amount is three, then there is only one choice left for this cell, so put it into the high priority queue. If the amount is two, put it into the beginning of the low priority queue. If the amount is one, put it into the end of the low priority queue. 
-If all the four colours have been assigned adjacent to a cell, the colouring proces is stuck. Rollback all the colouring up to the previous checkpoint saved in the stack. Start with the option saved in that checkpoint and continue the colouring process.
-To avoid non-stop repetitive colouring, a circuit breaker is created to remember if all the options have been tried out. 
 
 ## Steps of Colouring
 The colouring is done in the function ```set_leaf_color()``` in the chemical.js file.
