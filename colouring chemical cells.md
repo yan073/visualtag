@@ -58,7 +58,7 @@ The leaf cells are labeled with one of colouring class (from ```leafc1_1``` to `
 ## Basic Ideas
 When picking a colour for one cell, if there are other options, save each of the other option into a checkpoint, put those checkpoints into a stack, colouring all the cells in the same cluster with the same colour, calculating the amount of different colours for each adjacent un-coloured cells. <br/>If the amount is three, then there is only one choice left for this cell, so put it into the high priority queue. If the amount is two, put it into the beginning of the low priority queue. If the amount is one, put it into the end of the low priority queue. 
 <br/>Pick the next cell for the high priority queue or low priority queue according its priority, repeat the above colouring process.
-<br/>If all the four colours have been assigned adjacent to a cell, the colouring proces is stuck. Rollback all the colouring up to the previous checkpoint saved in the stack. Start with the option saved in that checkpoint and continue the colouring process.
+<br/>If all the four colours have been assigned adjacent to a un-coloured cell, the colouring proces is stuck. Rollback all the colouring up to the previous checkpoint saved in the stack. Start with the option saved in that checkpoint and continue the colouring process.
 <br/>To avoid non-stop repetitive colouring, a circuit breaker is created to remember if all the options have been tried out. 
 
 ## Global Variables
