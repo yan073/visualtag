@@ -83,7 +83,7 @@ Step 2, find all the adjacent cells for every leaf cell, and put it into the dic
 
 Step 3, pick the first cell index (it is 0 here) from the leaves array ```leaves```, go to step 4, start colouring it.
 
-Step 4, If the given cell index is not in the array ```colored```, go to step 5 to find a suitable colour for it. Otherwise, go to step 10.
+Step 4, If the given cell index is not in the array ```colored```, go to step 5 to find a suitable colour for it. Otherwise, go to step 9 to get the next cell to colour.
 
 Step 5, If the value of ```color_option``` is greater than zero, then the colour for this cell is reserved, use this value as the selected colour for this cell, set the values of ```color_option``` as -1 to remove the reserved colour option, go to step 8. Otherwise, go to step 6 to get a suitable colour for this cell.
 
