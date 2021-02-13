@@ -17,8 +17,7 @@
 
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
-    <script src="visual_common.js"></script>
-    <script src="chemical.js"></script>
+    <script src="https://unpkg.com/treemap-4color@1.0.1/dist/treemap-4color.min.js"></script>
     <script>
       (function() {
         d3.json("chem_cluster.json", function(error, json) {
@@ -43,7 +42,9 @@
             placement: 'bottom',
           });
           
-          set_leaf_color();
+          setLeavesColor(function (root){
+              return root.firstElementChild.getBoundingClientRect();
+            });
         });
       }());
     </script>

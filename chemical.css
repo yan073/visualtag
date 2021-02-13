@@ -3,14 +3,14 @@ html {
 }
 
 :root{
-  --c1_light_fill: #A9E3EF;
-  --c1_medium_light_fill: #59C8FF;
-  --c1_medium_dark_fill: #00aaff;
-  --c1_dark_fill: #0090d8;
-  --c1_label_border: #e7f6ff;
+  --c_light_fill: #A9E3EF;
+  --c_medium_light_fill: #59C8FF;
+  --c_medium_dark_fill: #00aaff;
+  --c_dark_fill: #0090d8;
+  --c_label_border: #e7f6ff;
 
-  --c5_fill: #d5d5d5;
-  --c5_label_border: #5e5e5e;
+  --cu_fill: #d5d5d5;
+  --cu_label_border: #5e5e5e;
 }
 
 img {
@@ -33,44 +33,44 @@ img {
 
 
   
-  .leafc1_1 text { 
-    fill: var(--c1_label_border);
+  .leafc_1 text { 
+    fill: var(--c_label_border);
   }
-  .leafc1_2 text { 
-    fill: var(--c1_label_border);
+  .leafc_2 text { 
+    fill: var(--c_label_border);
   }      
-  .leafc1_3 text { 
-    fill: var(--c1_label_border);
+  .leafc_3 text { 
+    fill: var(--c_label_border);
   }
-  .leafc1_4 text { 
-    fill: var(--c1_label_border);
+  .leafc_4 text { 
+    fill: var(--c_label_border);
   }
-  .leafc1_5 text { 
-    fill: var(--c1_label_border);
+  .leafc_5 text { 
+    fill: var(--c_label_border);
   }
 
-  .leafc1_1 rect{ 
-    stroke: var(--c1_label_border);
-    fill: var(--c1_dark_fill);
+  .leafc_1 rect{ 
+    stroke: var(--c_label_border);
+    fill: var(--c_dark_fill);
   }
   
-  .leafc1_2 rect { 
-    stroke: var(--c1_label_border);
-    fill: var(--c1_medium_light_fill);
+  .leafc_2 rect { 
+    stroke: var(--c_label_border);
+    fill: var(--c_medium_light_fill);
   }
 
-  .leafc1_3 rect { 
-    stroke: var(--c1_label_border);
-    fill: var(--c1_medium_dark_fill);
+  .leafc_3 rect { 
+    stroke: var(--c_label_border);
+    fill: var(--c_medium_dark_fill);
   }
 
-  .leafc1_4 rect { 
-    stroke: var(--c1_label_border);
-    fill: var(--c1_light_fill);
+  .leafc_4 rect { 
+    stroke: var(--c_label_border);
+    fill: var(--c_light_fill);
   }  
 
-  .leafc1_5 rect { 
-    stroke: var(--c5_label_border);
-    fill: var(--c5_fill);
+  .leafc_5 rect { 
+    stroke: var(--cu_label_border);
+    fill: var(--cu_fill);
   }
   
