@@ -20,32 +20,65 @@
     <script src="https://unpkg.com/treemap-4color@1.0.1/dist/treemap-4color.min.js"></script>
     <script>
       (function() {
-        d3.json("chem_cluster.json", function(error, json) {
-
-          var treemap = d3.select("#vis").append("svg")
+        const createMapFromJson = function(json){
+            var treemap = d3.select("#vis").append("svg")
             .chart("treemap")
             .value("size")
             .sortable("_DESC_")
             .collapsible();
 
-          treemap.draw(json);
-          tippy('.leaf', {
-            allowHTML: true,
-		        arrow: true,
-            delay: [500, 0],
-            maxWidth: 500,
-		        performance: true,
-            size: 'large',
-            theme:'light',
-            interactive: true, 
-            appendTo: document.body,
-            placement: 'bottom',
-          });
-          
-          setLeavesColor(function (root){
+            treemap.draw(json);
+            tippy('.leaf', {
+              allowHTML: true,
+              arrow: true,
+              delay: [500, 0],
+              maxWidth: 500,
+              performance: true,
+              size: 'large',
+              theme:'light',
+              interactive: true, 
+              appendTo: document.body,
+              placement: 'bottom',
+            });
+            setLeavesColor(function (root){
               return root.firstElementChild.getBoundingClientRect();
             });
-        });
+        };
+        
+        const createChart = function() {
+          d3.json("chem_cluster.json", (error, json) => createMapFromJson(json));
+        };
+
+        createChart();
+
+        // borrow the code from https://stackoverflow.com/questions/5489946/how-to-wait-for-the-end-of-resize-event-and-only-then-perform-an-action 
+        // to handle multiple resize events. Many thanks!
+        var rtime;
+        var timeout = false;
+        const delta = 200;
+
+        function resizeend() {
+          if (new Date() - rtime < delta) {
+            setTimeout(resizeend, delta);
+          } else {
+            timeout = false;
+            // remove the existing chart.
+            const vis = document.getElementById("vis");
+            if (vis.hasChildNodes()) {
+              vis.removeChild(vis.childNodes[0]);
+            }
+            // re-create the chart with new dimension.
+            createChart();
+          }               
+        }
+
+        window.onresize = function () {
+          rtime = new Date();
+          if (timeout === false) {
+              timeout = true;
+              setTimeout(resizeend, delta);
+          }
+        };
       }());
     </script>
   </body>
