@@ -1,52 +1,39 @@
 <!DOCTYPE html>
 <html>
   <head>
-      <!-- Thanks to http://bl.ocks.org/annaghi/5d24b37ebe077d4e919f -->
     <meta charset="utf-8">
-    <title>Tagged Identifiers in Trials</title>
-    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <script src="https://rawgit.com/misoproject/d3.chart/master/d3.chart.min.js"></script>
-    <script src="https://rawgit.com/annaghi/d3.chart.layout.hierarchy/master/d3.chart.layout.hierarchy.js"></script>
-    <style>
-      html {
-        display: table;
-        margin: auto; }
-
-      #vis {
-        width: 960px;
-        height: 500px; }
-
-      .cell text {
-        cursor: move;
-        font: 10px sans-serif;
-        text-anchor: middle; }
-
-      .cell rect {  
-        stroke: #fff; }
-    </style>
+    <title>Tagged Identifiers in Covid-19 Trials</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">    
+    <link href="main.css" rel="stylesheet" type="text/css">
   </head>
+
   <body>
+    <div class="row mx-5 mt-3">
+      <div class="col mx-1">
+        <div class="row">
+          <a href="protein_cath.html"><img src="protein.png" class="snap" ></img></a>
+        </div>
+        <div class="row my-1">
+          <p class="ltitle">Proteins in Trials</p>
+        </div>
+      </div>
+      <div class="col mx-1">
+        <div class="row">
+          <a href="chemical.html"><img src="chemical.png" class="snap" ></img></a>
+        </div>
+        <div class="row my-1">
+          <p class="ltitle">Chemical in Trials</p>
+        </div>
+      </div>
+      <div class="col mx-1">
+        <div class="row">
+          <a href="timeline.html"><img src="timeline.png" class="snap" ></img></a>
+        </div>
+        <div class="row my-1">
+          <p class="ltitle">Chemical Timelines</p>
+        </div>
+      </div>
+    </div>
 
-    <div id="vis"></div>
-
-    <script>
-      (function() {
-        d3.json("https://raw.githubusercontent.com/yan073/visualtag/main/stat_vis.json", function(error, json) {
-
-          var treemap = d3.select("#vis").append("svg")
-
-            .chart("treemap")
-
-              .value("size")
-              .sortable("_DESC_")
-              .collapsible()
-              .colors(['#FFCDB2', '#FFB4A2', '#E5989B', '#B5838D'])
-              ;
-
-          treemap.draw(json);
-
-        });
-      }());
-    </script>
   </body>
 </html>
