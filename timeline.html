@@ -1,253 +1,234 @@
 <!DOCTYPE html>
-<!-- http://bl.ocks.org/WillTurman/4631136 -->
-<meta charset="utf-8">
-<style>
-
-body {
-  font: 10px sans-serif;
-}
-
-.chart { 
-  background: #fff;
-}
-
-p {
-  font: 12px helvetica;
-}
-
-
-.axis path, .axis line {
-  fill: none;
-  stroke: #000;
-  stroke-width: 2px;
-  shape-rendering: crispEdges;
-}
-
-button {
-  position: absolute;
-  right: 50px;
-  top: 10px;
-}
-
-</style>
+<html>
+  <head>
+    <!-- modified from https://www.d3-graph-gallery.com/graph/stackedarea_template.html -->        
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v6.js"></script>
+  </head>
 <body>
-<script src="https://d3js.org/d3.v2.js"></script>
+<!-- Create a div where the graph will take place -->
+  <div id="vis" />
 
+  <script>
 
-<div class="chart">
-</div>
-
-<script>
-
-chart("chembl_timeline.csv", "orange");
-var format = d3.time.format("%Y-%m-%d");
-
-var datearray = [];
-var colorrange = [];
-
-var randomColor = (function(){
-  var golden_ratio_conjugate = 0.618033988749895;
-  var h = Math.random();
-
-  var hslToRgb = function (h, s, l){
-      var r, g, b;
-
-      if(s == 0){
-          r = g = b = l; // achromatic
-      }else{
-          function hue2rgb(p, q, t){
-              if(t < 0) t += 1;
-              if(t > 1) t -= 1;
-              if(t < 1/6) return p + (q - p) * 6 * t;
-              if(t < 1/2) return q;
-              if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-              return p;
-          }
-
-          var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-          var p = 2 * l - q;
-          r = hue2rgb(p, q, h + 1/3);
-          g = hue2rgb(p, q, h);
-          b = hue2rgb(p, q, h - 1/3);
-      }
-
-      return '#'+Math.round(r * 255).toString(16)+Math.round(g * 255).toString(16)+Math.round(b * 255).toString(16);
-  };
-  
-  return function(){
-    h += golden_ratio_conjugate;
-    h %= 1;
-    return hslToRgb(h, 0.5, 0.60);
-  };
-})();
-
-function chart(csvpath, color) {
-
-if (color == "blue") {
-  colorrange = ["#045A8D", "#2B8CBE", "#74A9CF", "#A6BDDB", "#D0D1E6", "#F1EEF6"];
-}
-else if (color == "pink") {
-  colorrange = ["#980043", "#DD1C77", "#DF65B0", "#C994C7", "#D4B9DA", "#F1EEF6"];
-}
-else if (color == "orange") {
-  colorrange = ["#B30000", "#E34A33", "#FC8D59", "#FDBB84", "#FDD49E", "#FEF0D9"];
-}
-strokecolor = colorrange[0];
-
-
-
-var margin = {top: 20, right: 40, bottom: 30, left: 30};
-var width = document.body.clientWidth - margin.left - margin.right;
-var height = 400 - margin.top - margin.bottom;
-
-var tooltip = d3.select("body")
-    .append("div")
-    .attr("class", "remove")
-    .style("position", "absolute")
-    .style("z-index", "20")
-    .style("visibility", "hidden")
-    .style("top", "30px")
-    .style("left", "55px");
-
-var x = d3.time.scale()
-    .range([0, width]);
-
-var y = d3.scale.linear()
-    .range([height-10, 0]);
-
-var z = d3.scale.ordinal()
-    .range(colorrange);
-
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom")
-    .ticks(d3.time.months);
-
-var yAxis = d3.svg.axis()
-    .scale(y);
-
-var yAxisr = d3.svg.axis()
-    .scale(y);
-
-var stack = d3.layout.stack()
-    .offset("silhouette")
-    .values(function(d) { return d.values; })
-    .x(function(d) { return d.date; })
-    .y(function(d) { return d.value; });
-
-var nest = d3.nest()
-    .key(function(d) { return d.key; });
-
-var area = d3.svg.area()
-    .interpolate("cardinal")
-    .x(function(d) { return x(d.date); })
-    .y0(function(d) { return y(d.y0); })
-    .y1(function(d) { return y(d.y0 + d.y); });
-
-var svg = d3.select(".chart").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-var graph = d3.csv(csvpath, function(data) {
-  data.forEach(function(d) {
-    d.date = format.parse(d.date);
-    d.value = +d.value;
-  });
-
-  var nestentries = nest.entries(data);
-  console.log(nestentries[0]);
-  console.log(nestentries[0][0]);
-  var layers = stack(nest.entries(data));
-
-  x.domain(d3.extent(data, function(d) { return d.date; }));
-  y.domain([0, d3.max(data, function(d) { return d.y0 + d.y; })]);
-
-  svg.selectAll(".layer")
-      .data(layers)
-    .enter().append("path")
-      .attr("class", "layer")
-      .attr("d", function(d) { return area(d.values); })
-      .style("fill", randomColor);
-
-
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
-
-  svg.append("g")
-      .attr("class", "y axis")
-      .attr("transform", "translate(" + width + ", 0)")
-      .call(yAxis.orient("right"));
-
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis.orient("left"));
-
-  svg.selectAll(".layer")
-    .attr("opacity", 1)
-    .on("mouseover", function(d, i) {
-      svg.selectAll(".layer").transition()
-      .duration(250)
-      .attr("opacity", function(d, j) {
-        return j != i ? 0.6 : 1;
-    })})
-
-    .on("mousemove", function(d, i) {
-      mousex = d3.mouse(this);
-      mousex = mousex[0];
-      var invertedx = x.invert(mousex);
-      invertedx = invertedx.getMonth() + invertedx.getDate();
-      var selected = (d.values);
-      for (var k = 0; k < selected.length; k++) {
-        datearray[k] = selected[k].date
-        datearray[k] = datearray[k].getMonth() + datearray[k].getDate();
-      }
-
-      mousedate = datearray.indexOf(invertedx);
-      pro = d.values[mousedate].value;
-
-      d3.select(this)
-      .classed("hover", true)
-      .attr("stroke", strokecolor)
-      .attr("stroke-width", "0.5px"), 
-      tooltip.html( "<p>" + d.key + "<br>" + pro + "</p>" ).style("visibility", "visible");
-      
-    })
-    .on("mouseout", function(d, i) {
-     svg.selectAll(".layer")
-      .transition()
-      .duration(250)
-      .attr("opacity", "1");
-      d3.select(this)
-      .classed("hover", false)
-      .attr("stroke-width", "0px"), tooltip.html( "<p>" + d.key + "<br>" + pro + "</p>" ).style("visibility", "hidden");
-  })
+    // Parse the Data
+    // d3.csv("timeline_chembl.csv").then( function(data) { 
+    const createVizFromCSV = function(data) {
     
-  var vertical = d3.select(".chart")
-        .append("div")
-        .attr("class", "remove")
-        .style("position", "absolute")
-        .style("z-index", "19")
-        .style("width", "1px")
-        .style("height", "380px")
-        .style("top", "10px")
-        .style("bottom", "30px")
-        .style("left", "0px")
-        .style("background", "#fff");
+    // set the dimensions and margins of the graph
+    const margin = {top: 60, right: 50, bottom: 50, left: 50},
+        width = document.body.clientWidth - margin.left - margin.right,
+        height = 600 - margin.top - margin.bottom;
+    
+    // append the svg object to the body of the page
+    const svg = d3.select("#vis")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform",
+              `translate(${margin.left}, ${margin.top})`);
 
-  d3.select(".chart")
-      .on("mousemove", function(){  
-         mousex = d3.mouse(this);
-         mousex = mousex[0] + 5;
-         vertical.style("left", mousex + "px" )})
-      .on("mouseover", function(){  
-         mousex = d3.mouse(this);
-         mousex = mousex[0] + 5;
-         vertical.style("left", mousex + "px")});
-});
-}
-</script>
+      const parseTime = d3.timeParse("%Y-%m-%d");
+      data.forEach(function(d) {
+        d.date = parseTime(d.date);
+      });
+
+      var colormap = {};
+    
+      // List of groups = header of the csv files
+      const keys = data.columns.slice(1)
+      // color palette from https://colorbrewer2.org/#type=qualitative&scheme=Paired&n=12
+      const colors = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928'];
+      for (let i = 0; i < keys.length; i++) {
+        colormap[keys[i]] = colors[i % colors.length];
+      }
+    
+      //stack the data
+      const stackedData = d3.stack()
+        .keys(keys)
+        (data)
+    
+      //////////
+      // AXIS //
+      //////////
+    
+      // Add X axis
+      const x = d3.scaleTime()
+        .domain(d3.extent(data, function(d) { return d.date; }))
+        .range([ 0, width ]);
+      const xAxis = svg.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(x).ticks(15))
+    
+      // Add X axis label:
+      svg.append("text")
+          .attr("text-anchor", "end")
+          .attr("x", width)
+          .attr("y", height+40 )
+          .text("Time");
+    
+      // Add Y axis label:
+      svg.append("text")
+          .attr("text-anchor", "end")
+          .attr("x", 0)
+          .attr("y", -20 )
+          .text("# of trials mentioning it")
+          .attr("text-anchor", "start")
+    
+      // Add Y axis
+      const y = d3.scaleLinear()
+        .domain([0, 1500])
+        .range([ height, 0 ]);
+      svg.append("g")
+        .call(d3.axisLeft(y).ticks(5))    
+    
+      //////////
+      // BRUSHING AND CHART //
+      //////////
+    
+      // Add a clipPath: everything out of this area won't be drawn.
+      const clip = svg.append("defs").append("svg:clipPath")
+          .attr("id", "clip")
+          .append("svg:rect")
+          .attr("width", width )
+          .attr("height", height )
+          .attr("x", 0)
+          .attr("y", 0);
+    
+      // Add brushing
+      const brush = d3.brushX()                 // Add the brush feature using the d3.brush function
+          .extent( [ [0,0], [width,height] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+          .on("end", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
+    
+      // Create the scatter variable: where both the circles and the brush take place
+      const areaChart = svg.append('g')
+        .attr("clip-path", "url(#clip)")
+    
+      // Area generator
+      const area = d3.area()
+        .x(function(d) { return x(d.data.date); })
+        .y0(function(d) { return y(d[0]); })
+        .y1(function(d) { return y(d[1]); })
+    
+      // Show the areas
+      areaChart
+        .selectAll("mylayers")
+        .data(stackedData)
+        .join("path")
+          .attr("class", function(d) { return "myArea " + d.key })
+          .style("fill", function(d) { return colormap[d.key]; })
+          .attr("d", area);
+    
+      // Add the brushing
+      areaChart
+        .append("g")
+          .attr("class", "brush")
+          .call(brush);
+    
+      let idleTimeout
+      function idled() { idleTimeout = null; }
+    
+      // A function that update the chart for given boundaries
+      function updateChart(event,d) {
+    
+        extent = event.selection
+    
+        // If no selection, back to initial coordinate. Otherwise, update X axis domain
+        if(!extent){
+          if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
+          x.domain(d3.extent(data, function(d) { return d.date; }))
+        }else{
+          x.domain([ x.invert(extent[0]), x.invert(extent[1]) ])
+          areaChart.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
+        }
+    
+        // Update axis and area position
+        xAxis.transition().duration(1000).call(d3.axisBottom(x).ticks(5))
+        areaChart
+          .selectAll("path")
+          .transition().duration(1000)
+          .attr("d", area)
+        }    
+    
+        //////////
+        // HIGHLIGHT GROUP //
+        //////////
+    
+        // What to do when one group is hovered
+        const highlight = function(event,d){
+          // reduce opacity of all groups
+          d3.selectAll(".myArea").style("opacity", .1)
+          // expect the one that is hovered
+          d3.select("."+d).style("opacity", 1)
+        }
+    
+        // And when it is not hovered anymore
+        const noHighlight = function(event,d){
+          d3.selectAll(".myArea").style("opacity", 1)
+        }
+        //////////
+        // LEGEND //
+        //////////
+        const top5 = keys.slice(0, 5);
+        // Add one dot in the legend for each name.
+        const size = 20
+        svg.selectAll("myrect")
+          .data(top5)
+          .join("rect")
+            .attr("x", width - 300)
+            .attr("y", function(d,i){ return 10 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr("width", size)
+            .attr("height", size)
+            .style("fill", function(d){ return colormap[d]})
+            .on("mouseover", highlight)
+            .on("mouseleave", noHighlight)
+    
+        // Add one dot in the legend for each name.
+        svg.selectAll("mylabels")
+          .data(top5)
+          .join("text")
+            .attr("x", width - 300 + size*1.2)
+            .attr("y", function(d,i){ return 10 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+            .style("fill", function(d){ return colormap[d]})
+            .text(function(d){ return d})
+            .attr("text-anchor", "left")
+            .style("alignment-baseline", "middle")
+            .on("mouseover", highlight)
+            .on("mouseleave", noHighlight)
+    
+    };
+    d3.csv("chem_timeline.csv").then( createVizFromCSV );
+        // borrow the code from https://stackoverflow.com/questions/5489946/how-to-wait-for-the-end-of-resize-event-and-only-then-perform-an-action 
+        // to handle multiple resize events. Many thanks!
+        var rtime;
+        var timeout = false;
+        const delta = 200;
+
+        function resizeend() {
+          if (new Date() - rtime < delta) {
+            setTimeout(resizeend, delta);
+          } else {
+            timeout = false;
+            // remove the existing chart.
+            const vis = document.getElementById("vis");
+            if (vis.hasChildNodes()) {
+              vis.innerHTML = '';
+            }
+            // re-create the chart with new dimension.
+            d3.csv("chem_timeline.csv").then( createVizFromCSV );
+          }               
+        }
+
+        window.onresize = function () {
+          rtime = new Date();
+          if (timeout === false) {
+              timeout = true;
+              setTimeout(resizeend, delta);
+          }
+        };
+
+    </script>
+
 </body>
+</html>
