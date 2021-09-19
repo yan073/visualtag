@@ -19,10 +19,11 @@
     <script src="https://unpkg.com/tippy.js@6"></script>
     <script src="visual_common.js"></script>
     <script src="protein_cath.js"></script>
+    <script src="zenodo_util.js"></script>
     <script>
       (function() {
-        d3.json("protein_cath.json", function(error, json) {
-
+        // https://zenodo.org/record/5154355
+        query_zenodo_json_file("5154354", "protein_cath.json", function(error, json) {
           var treemap = d3.select("#vis").append("svg")
             .chart("treemap")
             .value("size")
