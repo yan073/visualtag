@@ -9,6 +9,7 @@
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="https://rawgit.com/misoproject/d3.chart/master/d3.chart.min.js"></script>
     <script src="d3.treemap.chemical.js"></script>
+    <script src="zenodo_util.js"></script>
 
   </head>
   <body>
@@ -46,7 +47,7 @@
         };
         
         const createChart = function() {
-          d3.json("chem_cluster.json", (error, json) => createMapFromJson(json));
+          query_zenodo_json_file("5154354", "chem_cluster.json", (error, json) => createMapFromJson(json));
         };
 
         createChart();
