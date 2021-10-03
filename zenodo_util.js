@@ -1,24 +1,24 @@
-function query_zenodo_json_file(recid, filename, querier, callback) {
-    query_zenodo_latest_version(recid, filename, querier, function(error, url) {
-        querier(url, function(error, data) {
-            callback(error, data);
-        });
+async function get_zenodo_file_url(recid, filename){
+    var response = await fetch("https://zenodo.org/api/records/" + recid);
+    const info = await response.json();
+    response = await fetch(info.links.latest, {
+        headers: {
+            'Accept': 'application/json'
+          }
     });
+    const latest = await response.json();
+    const fobj = latest.files.find(f => f.key === filename);
+    return fobj.links.self;
 }
 
-function query_zenodo_latest_version(recid, filename, querier, callback){
-    querier("https://zenodo.org/api/records/" + recid, function(error, data1) {
-        querier(data1.links.latest, function(error, data2) {
-            fobj = data2.files.find(f => f.filename === filename);
-            callback(error, fobj.links.download);
-        });
-    });
+async function query_zenodo_json_file(recid, filename, callback) {
+    const url = await get_zenodo_file_url(recid, filename);
+    const response = await fetch(url);
+    callback(null, await response.json())
 }
 
-function query_zenodo_csv_file(recid, filename, jsonqr, csvqr, callback) {
-    query_zenodo_latest_version(recid, filename, jsonqr, function(error, url) {
-        csvqr(url, function(error, data) {
-            callback(error, data);
-        });
-    });
+async function query_zenodo_text_file(recid, filename, callback){
+    const url = await get_zenodo_file_url(recid, filename);
+    const response = await fetch(url);
+    callback(await response.text());
 }

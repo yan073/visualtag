@@ -14,8 +14,11 @@
 
     // Parse the Data
     // d3.csv("timeline_chembl.csv").then( function(data) { 
-    const createVizFromCSV = function(data) {
-    
+    const createVizFromCSV = function(csv) {
+      // https://stackoverflow.com/questions/13436519/csv-tsv-comment-lines-d3
+      // remove the comment line from text before parsing csv.
+      csv = csv.replace(/^[#@][^\r\n]+[\r\n]+/mg, '');
+      var data = d3.csvParse(csv);
     // set the dimensions and margins of the graph
     const margin = {top: 60, right: 50, bottom: 50, left: 50},
         width = document.body.clientWidth - margin.left - margin.right,
@@ -199,7 +202,11 @@
             .on("mouseleave", noHighlight)
     
     };
-    d3.csv("chem_timeline.csv").then( createVizFromCSV );
+    const query_csv_data = function(){
+      query_zenodo_text_file("5154354", "chem_timeline.csv", createVizFromCSV);
+    };
+    query_csv_data();
+    //d3.csv("chem_timeline.csv").then( createVizFromCSV );
         // borrow the code from https://stackoverflow.com/questions/5489946/how-to-wait-for-the-end-of-resize-event-and-only-then-perform-an-action 
         // to handle multiple resize events. Many thanks!
         var rtime;
@@ -217,7 +224,7 @@
               vis.innerHTML = '';
             }
             // re-create the chart with new dimension.
-            d3.csv("chem_timeline.csv").then( createVizFromCSV );
+            query_csv_data();
           }               
         }
 
