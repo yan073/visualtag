@@ -1125,7 +1125,21 @@ d3.chart("hierarchy").extend("treemap", {
       }
     });
   },
-
+  remove_duplicates: function(words) {
+    var results =[];
+    var lowerset = new Set();
+    for(let i=0;i< words.length;i++){
+      let lower = words[i].toLowerCase();
+      if (!lowerset.has(lower)){
+        lowerset.add(lower);
+        results.push(words[i]);
+      }
+      if (results.length>=3) {
+        return results;
+      }
+    }    
+    return results;
+  },
   getLeafContent : function(d) { 
     let cath = d.parent.name;
     let cat = cath.charAt(0);//'1', '2', '3', '4', 'u'
@@ -1134,9 +1148,18 @@ d3.chart("hierarchy").extend("treemap", {
       content = content + ', <a href="http://www.cathdb.info/version/latest/superfamily/' + cath + '/classification" ><strong>' + cath +'</strong></a>';
     }
     content += '<p>Total number of clinical trials mentioning this protein: ' + d.size + '</p>';
+    var trials_url = 'https://clinicaltrials.gov/ct2/results?cond=COVID-19&term=' 
+    let words = this.remove_duplicates(d.words);//Array.from(new Set( d.words.map(x => typeof x === 'string' ? x.toLowerCase() : x)));
+    for(let i=0;i< words.length; i++) {
+      let word = '%22' + words[i].replace(' ', '+') + '%22';
+      if (i>0){
+        trials_url += '+';
+      }
+      trials_url += '%22' + words[i].replace(' ', '+') + '%22';
+    }
+    content += '<p>Trials can be found at <a href="' + trials_url + '">here</a></p>';
     return content;
   },
-
   getLeafClass : function(d) { 
     let cat = d.parent.name.charAt(0);//'1', '2', '3', '4', 'u'
     return cat != null ? "leafc" + cat : "";
