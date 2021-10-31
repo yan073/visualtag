@@ -7,7 +7,10 @@ async function get_zenodo_file_url(recid, filename){
           }
     });
     const latest = await response.json();
-    const fobj = latest.files.find(f => f.key === filename);
+    const fobj = latest.files.find(f => f.key == filename);
+    if (fobj === undefined) {
+        console.log(latest.files);
+    }
     return fobj.links.self;
 }
 
