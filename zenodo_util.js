@@ -10,6 +10,7 @@ async function get_zenodo_file_url(recid, filename){
     var fobj = latest.files.find(f => f.key == filename);
     if (fobj === undefined) {
         fobj = latest.files.find(f => f.filename == filename);
+        return fobj.links.download;
     }
     return fobj.links.self;
 }
