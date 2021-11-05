@@ -1125,20 +1125,29 @@ d3.chart("hierarchy").extend("treemap", {
       }
     });
   },
-  remove_duplicates: function(words) {
-    var results =[];
-    var lowerset = new Set();
-    for(let i=0;i< words.length;i++){
-      let lower = words[i].toLowerCase();
-      if (!lowerset.has(lower)){
-        lowerset.add(lower);
-        results.push(words[i]);
+  getTrialSearch: function(trials) {
+    let page_size = 50;
+    let total_len = trials.length;
+    var pages = [];
+    for(let i=0; i< total_len/page_size; i++) {
+      let start = i *  page_size;
+      var end = start + page_size;
+      if (end > total_len){
+        end = total_len;
       }
-      if (results.length>=3) {
-        return results;
+      pages.push([start, end]);
+    }
+    let sep = '+OR+';
+    var content = '';
+    for(const p of pages) {
+      if (p[0] > 0) {
+        content += ', '
       }
-    }    
-    return results;
+      const ids = trials.slice(p[0], p[1]).join(sep);
+      content += '<a href="https://clinicaltrials.gov/ct2/results?show_xprt=Y&xprt=' + ids;
+      content += '">'+ (p[0] + 1) + '-' + p[1] +'</a>';
+    }
+    return content;
   },
   getLeafContent : function(d) { 
     let cath = d.parent.name;
@@ -1147,17 +1156,9 @@ d3.chart("hierarchy").extend("treemap", {
     if (cat != 'u') {
       content = content + ', <a href="http://www.cathdb.info/version/latest/superfamily/' + cath + '/classification" ><strong>' + cath +'</strong></a>';
     }
-    content += '<p>Total number of clinical trials mentioning this protein: ' + d.size + '</p>';
-    var trials_url = 'https://clinicaltrials.gov/ct2/results?cond=COVID-19&term=' 
-    let words = this.remove_duplicates(d.words);//Array.from(new Set( d.words.map(x => typeof x === 'string' ? x.toLowerCase() : x)));
-    for(let i=0;i< words.length; i++) {
-      let word = '%22' + words[i].replace(' ', '+') + '%22';
-      if (i>0){
-        trials_url += '+';
-      }
-      trials_url += '%22' + words[i].replace(' ', '+') + '%22';
-    }
-    content += '<p>Trials can be found at <a href="' + trials_url + '">here</a></p>';
+    content += '<p>Trials with this protein: ' + d.size + ' ('; 
+    content += this.getTrialSearch(d.trials);
+    content += ')</p>';
     return content;
   },
   getLeafClass : function(d) { 
