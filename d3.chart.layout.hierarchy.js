@@ -1145,16 +1145,16 @@ d3.chart("hierarchy").extend("treemap", {
       }
       const ids = trials.slice(p[0], p[1]).join(sep);
       content += '<a href="https://clinicaltrials.gov/ct2/results?show_xprt=Y&xprt=' + ids;
-      content += '">'+ (p[0] + 1) + '-' + p[1] +'</a>';
+      content += '" target="_blank">'+ (p[0] + 1) + '-' + p[1] +'</a>';
     }
     return content;
   },
   getLeafContent : function(d) { 
     let cath = d.parent.name;
     let cat = cath.charAt(0);//'1', '2', '3', '4', 'u'
-    var content = '<a href="https://aquaria.app/' + d.name + '"><strong>'+d.name+'</strong></a>';
+    var content = '<a href="https://aquaria.app/' + d.name + '" target="_blank"><strong>'+d.name+'</strong></a>';
     if (cat != 'u') {
-      content = content + ', <a href="http://www.cathdb.info/version/latest/superfamily/' + cath + '/classification" ><strong>' + cath +'</strong></a>';
+      content = content + ', <a href="http://www.cathdb.info/version/latest/superfamily/' + cath + '/classification" target="_blank"><strong>' + cath +'</strong></a>';
     }
     content += '<p>Trials with this protein: ' + d.size + ' ('; 
     content += this.getTrialSearch(d.trials);
