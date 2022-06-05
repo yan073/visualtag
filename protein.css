@@ -31,6 +31,10 @@ html {
   --c5_label_border: #5e5e5e;
 }
 
+p {
+  font: 12px sans-serif;
+}
+
   #vis {
     width: 100%;
     height: 98vh; 
