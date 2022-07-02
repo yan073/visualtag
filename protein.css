@@ -212,4 +212,27 @@ p {
     fill: var(--c5_fill);
   }
 
+  .tcc1 rect{
+    stroke: var(--c1_label_border);
+    fill: var(--c1_label_border);
+  }
+
+  .tcc2 rect{
+    stroke: var(--c2_label_border);
+    fill: var(--c2_label_border);
+  }
   
+  .tcc3 rect{
+    stroke: var(--c3_label_border);
+    fill: var(--c3_label_border);
+  }
+  
+  .tcc4 rect{
+    stroke: var(--c4_label_border);
+    fill: var(--c4_label_border);
+  }  
+
+  .svglegend {
+    float:left; 
+    margin-right: 8px;
+  }

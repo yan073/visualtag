@@ -1106,8 +1106,10 @@ d3.chart("hierarchy").extend("treemap", {
             }
             return null;
           });
+          this.attr("data-trials", d=> JSON.stringify(d.trials));
+          this.attr("data-cath", d=> {if (d.isLeaf) return d.parent.name; return '';});
+          this.attr("data-name", d=> d.name);
           this.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-          this.attr("data-tippy-content", d => d.isLeaf ? d.tooltip : null);
           
           this.append("rect")
             .attr("width", function(d) { return d.dx; })
@@ -1124,42 +1126,6 @@ d3.chart("hierarchy").extend("treemap", {
         },
       }
     });
-  },
-  getTrialSearch: function(trials) {
-    let page_size = 50;
-    let total_len = trials.length;
-    var pages = [];
-    for(let i=0; i< total_len/page_size; i++) {
-      let start = i *  page_size;
-      var end = start + page_size;
-      if (end > total_len){
-        end = total_len;
-      }
-      pages.push([start, end]);
-    }
-    let sep = '+OR+';
-    var content = '';
-    for(const p of pages) {
-      if (p[0] > 0) {
-        content += ', '
-      }
-      const ids = trials.slice(p[0], p[1]).join(sep);
-      content += '<a href="https://clinicaltrials.gov/ct2/results?show_xprt=Y&xprt=' + ids;
-      content += '" target="_blank">'+ (p[0] + 1) + '-' + p[1] +'</a>';
-    }
-    return content;
-  },
-  getLeafContent : function(d) { 
-    let cath = d.parent.name;
-    let cat = cath.charAt(0);//'1', '2', '3', '4', 'u'
-    var content = '<a href="https://aquaria.app/' + d.name + '" target="_blank"><strong>'+d.name+'</strong></a>';
-    if (cat != 'u') {
-      content = content + ', <a href="http://www.cathdb.info/version/latest/superfamily/' + cath + '/classification" target="_blank"><strong>' + cath +'</strong></a>';
-    }
-    content += '<p>Trials with this protein: ' + d.size + ' ('; 
-    content += this.getTrialSearch(d.trials);
-    content += ')</p>';
-    return content;
   },
   getLeafClass : function(d) { 
     let cat = d.parent.name.charAt(0);//'1', '2', '3', '4', 'u'
