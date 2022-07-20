@@ -19,7 +19,7 @@ async function generate_leaf_tooltip(instance) {
         let leaf_colour = get_leaf_colour(leaf.classList);
         var content = `<p><strong><a href="https://aquaria.app/Human/${leaf.dataset.name}" target="_blank">${leaf.dataset.name}</a></strong></p>`;
         const trial_ids = JSON.parse(leaf.dataset.trials);
-        const trial_links = `<p><strong>Trials that mention \'${leaf.dataset.name}\'</strong>: ` + get_trial_search(trial_ids);
+        const trial_links = `<p><strong>Trials that mention \'${leaf.dataset.name}\'</strong>: ` + get_trial_search(trial_ids) + `</p>`;
         if (leaf_colour == 'c1' || leaf_colour == 'c2' || leaf_colour == 'c3' || leaf_colour == 'c4') {
             var leaf_hue = get_leaf_hue(leaf.classList, leaf_colour);
             var cath_info = []

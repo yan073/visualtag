@@ -1103,7 +1103,12 @@ d3.chart("hierarchy").extend("treemap", {
           });
   
           this.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-          this.attr("data-tippy-content", d => d.isLeaf ? d.tooltip : null);
+          this.attr("data-name", d=> d.name);
+          this.attr("data-chembl", d=> d.chembl);
+          this.attr("data-pubchem", d=> d.pubchem);
+          this.attr("data-trials", d=> JSON.stringify(d.trials));
+
+          //this.attr("data-tippy-content", d => d.isLeaf ? d.tooltip : null);
           
           this.append("rect")
             .attr("width", function(d) { return d.dx; })

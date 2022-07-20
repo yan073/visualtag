@@ -78,3 +78,40 @@ img {
     fill: var(--cu_fill);
   }
   
+  td img {
+    width:90px;
+    height:90px;
+  }
+
+  .svglegend {
+    float:left; 
+    margin-right: 4px;
+  }
+
+  .tooltip-title {
+    font-size: 12px;
+    line-height:0.9;
+  }
+
+  .intro-line{
+    font-size: 10px;
+    font-weight: lighter;
+    font-style: italic;
+    line-height:0.9;
+    margin-bottom: 4pt;
+  }
+
+  .atc-mesh{
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 0.9;
+    margin-bottom: 4pt;
+  }
+
+  .atc-mesh span{
+    font-weight: lighter;
+  }  
+
+  .mention-line {
+    font-size: 12px;
+  }

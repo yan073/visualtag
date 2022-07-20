@@ -8,13 +8,14 @@
     <link rel="stylesheet" href="chemical.css">
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="https://rawgit.com/misoproject/d3.chart/master/d3.chart.min.js"></script>
+    <script src="chemical.js"></script>
     <script src="d3.treemap.chemical.js"></script>
     <script src="zenodo_util.js"></script>
 
   </head>
   <body>
 
-    <div id="vis"></div>
+    <div class ="py-2" id="vis"></div>
 
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
@@ -33,13 +34,19 @@
               allowHTML: true,
               arrow: true,
               delay: [500, 0],
-              maxWidth: 500,
+              maxWidth: 320,
               performance: true,
               size: 'large',
               theme:'light',
               interactive: true, 
               appendTo: document.body,
               placement: 'bottom',
+              content(leaf) {
+                return get_leaf_tooltip(leaf);
+              },
+              onShow(instance) {
+                generate_leaf_tooltip(instance);
+              }
             });
             setLeavesColor(function (root){
               return root.firstElementChild.getBoundingClientRect();
@@ -47,6 +54,7 @@
         };
         
         const createChart = function() {
+          //d3.json("chem_cluster.json", (error, json) => createMapFromJson(json));
           query_zenodo_json_file("5209552", "chem_cluster.json", (error, json) => createMapFromJson(json));
         };
 
