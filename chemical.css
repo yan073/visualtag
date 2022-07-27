@@ -81,6 +81,7 @@ img {
   td img {
     width:90px;
     height:90px;
+    float:right;
   }
 
   .svglegend {
@@ -115,3 +116,4 @@ img {
   .mention-line {
     font-size: 12px;
   }
+

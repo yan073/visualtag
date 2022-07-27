@@ -11,32 +11,29 @@ async function generate_leaf_tooltip(instance) {
     const leaf = instance.reference;
     if( leaf_tooltip_map.get(leaf) == null ) {
         const dataset = leaf.dataset;
-        var content = "<table>";
-            content += `<colgroup> <col style="width:60%"><col style="width:40%"></colgroup>`;
-            content += "<tr>";
+        var content = "<table><tr>";
                 const leaf_colour = get_leaf_colour(leaf.classList); 
                 const title_line = get_title_line(dataset, leaf_colour);
-                content += `<td colspan="2">${title_line}</td>`;
-            content += "</tr>";
-            content += "<tr>";
-                content += `<td colspan="2" class="intro-line">Adjacent compounds with the same colour are chemically similiar.</td>`;
+                content += `<td>${title_line}</td>`;
+            content += "</tr><tr>";
+                content += `<td class="intro-line">Adjacent compounds with the same colour are chemically similiar.</td>`;
             content += "</tr>";
             const atc_mesh = await get_atc_mesh(dataset.pubchem, dataset.name);
             content += "<tr><td>";
-            if (atc_mesh[0] && atc_mesh[1]) {
-                content += `<div class="atc-mesh">ATC code: <span>${atc_mesh[0]}</span></div><div class="atc-mesh">MeSH terms: <span>${atc_mesh[1]}</span></div>`;
-            }
-            else if (atc_mesh[2] && atc_mesh[2].length > 0) {
-                content += `<div class="atc-mesh">Description: <span>${atc_mesh[2]}</span></div>`;
-            }
-            content += `</td><td><img src=\"https://pubchem.ncbi.nlm.nih.gov/image/imgsrv.fcgi?cid=${dataset.pubchem}&t=l\" /></td>`;
-            content += "</tr>";
-            content += "<tr>";
+        
+        let atc_content = "";
+        if (atc_mesh[0] && atc_mesh[1]) {
+                atc_content = `<p class="atc-mesh">ATC code: <span>${atc_mesh[0]}</span></p><p class="atc-mesh">MeSH terms: <span>${atc_mesh[1]}</span></p>`;
+        }
+        else if (atc_mesh[2] && atc_mesh[2].length > 0) {
+                atc_content = `<p class="atc-mesh">Description: <span>${atc_mesh[2]}</span></p>`;
+        }
+
+        content += `<div><img src=\"https://pubchem.ncbi.nlm.nih.gov/image/imgsrv.fcgi?cid=${dataset.pubchem}&t=l\" />${atc_content}</div>`;
+        content += "</td></tr><tr>";
                 const trial_ids = JSON.parse(dataset.trials);
                 const trial_links = `<strong>Trials mentioning </strong>\'${dataset.name}\': ` + get_trial_search(trial_ids);            
-                content += `<td colspan=\"2\" class="mention-line">${trial_links}</td>`;
-            content += `</tr>`;
-        content += "</table>";
+        content += `<td colspan=\"2\" class="mention-line">${trial_links}</td></tr></table>`;
         leaf_tooltip_map.set(leaf, content);
         instance.setContent(content);        
     }
@@ -77,12 +74,12 @@ async function get_atc_mesh(pubchem, name){
         url = `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${ename}/description/JSON`;
         response = await fetch(url);
         info = await response.json();
-        const desc = info.InformationList.Information.find( s => s.Description);
-        if (desc) {
-            other = desc.Description;
-        }
-        else {
-            other = "";
+        other = "";
+        if(info.InformationList && info.InformationList.Information) {
+            const desc = info.InformationList.Information.find( s => s.Description);
+            if (desc) {
+                other = desc.Description;
+            }
         }
     }
     return [atc_string, mesh_info, other];
