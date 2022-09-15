@@ -49,6 +49,9 @@ function get_leaf_colour(clist){
 }
 
 function get_title_line(dataset, leaf_colour) {
+    if (dataset.name === "WHTVZRBIWZFKQO-AWEZNQCLSA-N") {
+        dataset.name = "(S)-chloroquine";
+    }
     return `<div class="tooltip-title"><svg width ="10" height="10" class="svglegend ${leaf_colour}"><rect width = "10" height="10"/></svg>`
             + `<strong>${dataset.name}</strong> (${dataset.chembl}, PubChem-${dataset.pubchem})</div>`;
 }
@@ -57,7 +60,8 @@ async function get_atc_mesh(pubchem, name){
     let response = await fetch(url);
     let info = await response.json();
     const toc = info.Record.Section.find(s=>s.TOCHeading == 'Pharmacology and Biochemistry');
-    let atc_string = mesh_info = other = null;
+    let atc_string = mesh_info = null;
+    let other = "";
     if (toc) {
         const atc_section = toc.Section.find(s=> s.TOCHeading == 'ATC Code');
         const mesh_section = toc.Section.find(s=> s.TOCHeading == 'MeSH Pharmacological Classification');
@@ -74,7 +78,6 @@ async function get_atc_mesh(pubchem, name){
         url = `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${ename}/description/JSON`;
         response = await fetch(url);
         info = await response.json();
-        other = "";
         if(info.InformationList && info.InformationList.Information) {
             const desc = info.InformationList.Information.find( s => s.Description);
             if (desc) {

@@ -1118,7 +1118,14 @@ d3.chart("hierarchy").extend("treemap", {
             .attr("x", function(d) { return d.dx / 2; })
             .attr("y", function(d) { return d.dy / 2; })
             .attr("dy", ".35em")
-            .text(function(d) { return d.children ? null : d[chart.options.name]; }) // order is matter! getComputedTextLength
+            .text(function(d) { 
+              if (d.children) return null;
+              let lname = d[chart.options.name];
+              if (lname === "WHTVZRBIWZFKQO-AWEZNQCLSA-N") {
+                lname = "(S)-chloroquine";
+              }
+              return lname;
+            }) // order is matter! getComputedTextLength
             .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; });
 
           this.on("click", function(event) { chart.trigger("click:rect", event); });
