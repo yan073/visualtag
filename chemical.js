@@ -53,7 +53,8 @@ function get_title_line(dataset, leaf_colour) {
         dataset.name = "(S)-chloroquine";
     }
     return `<div class="tooltip-title"><svg width ="10" height="10" class="svglegend ${leaf_colour}"><rect width = "10" height="10"/></svg>`
-            + `<strong>${dataset.name}</strong> (${dataset.chembl}, PubChem-${dataset.pubchem})</div>`;
+            + `<strong>${dataset.name}</strong> (${dataset.chembl}, ` 
+            + ` <a href="https://pubchem.ncbi.nlm.nih.gov/compound/${dataset.pubchem}" target="_blank">PubChem-${dataset.pubchem})</a></div>`;
 }
 async function get_atc_mesh(pubchem, name){
     let url = `https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/${pubchem}/JSON`;
