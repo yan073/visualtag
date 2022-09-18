@@ -29,7 +29,8 @@ async function generate_leaf_tooltip(instance) {
                 atc_content = `<p class="atc-mesh">Description: <span>${atc_mesh[2]}</span></p>`;
         }
 
-        content += `<div><img src=\"https://pubchem.ncbi.nlm.nih.gov/image/imgsrv.fcgi?cid=${dataset.pubchem}&t=l\" />${atc_content}</div>`;
+        content += `<div><a href="https://pubchem.ncbi.nlm.nih.gov/compound/${dataset.pubchem}" target="_blank">`
+                    +`<img src=\"https://pubchem.ncbi.nlm.nih.gov/image/imgsrv.fcgi?cid=${dataset.pubchem}&t=l\" /></a>${atc_content}</div>`;
         content += "</td></tr><tr>";
                 const trial_ids = JSON.parse(dataset.trials);
                 const trial_links = `<strong>Trials mentioning </strong>\'${dataset.name}\': ` + get_trial_search(trial_ids);            
