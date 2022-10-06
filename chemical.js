@@ -28,9 +28,10 @@ async function generate_leaf_tooltip(instance) {
         else if (atc_mesh[2] && atc_mesh[2].length > 0) {
                 atc_content = `<p class="atc-mesh">Description: <span>${atc_mesh[2]}</span></p>`;
         }
+        let image_style = atc_content.length > 0 ? "float:right" : "float:left";
 
         content += `<div><a href="https://pubchem.ncbi.nlm.nih.gov/compound/${dataset.pubchem}" target="_blank">`
-                    +`<img src=\"https://pubchem.ncbi.nlm.nih.gov/image/imgsrv.fcgi?cid=${dataset.pubchem}&t=l\" /></a>${atc_content}</div>`;
+                    +`<img src=\"https://pubchem.ncbi.nlm.nih.gov/image/imgsrv.fcgi?cid=${dataset.pubchem}&t=l\" style="${image_style}"/></a>${atc_content}</div>`;
         content += "</td></tr><tr>";
                 const trial_ids = JSON.parse(dataset.trials);
                 const trial_links = `<strong>Trials mentioning </strong>\'${dataset.name}\': ` + get_trial_search(trial_ids);            
@@ -70,10 +71,12 @@ async function get_atc_mesh(pubchem, name){
         const mesh_section = toc.Section.find(s=> s.TOCHeading == 'MeSH Pharmacological Classification');
         if (atc_section && mesh_section) {
             const atr_names = atc_section.Information.find( s=> s.Name == "ATC Code"); 
-            const pstrings = atr_names.Value.StringWithMarkup.map(s=> s.String);
-            const strings = pstrings.map(s => s.substring(s.indexOf(' - ')+2));
-            atc_string = strings.join(' > ');
-            mesh_info = mesh_section.Information.map(i => i.Name).join(' | ');
+            if (atr_names) {
+                const pstrings = atr_names.Value.StringWithMarkup.map(s=> s.String);
+                const strings = pstrings.map(s => s.substring(s.indexOf(' - ')+2));
+                atc_string = strings.join(' > ');
+                mesh_info = mesh_section.Information.map(i => i.Name).join(' | ');
+            }
         }
     }
     if (atc_string == null || mesh_info == null) {
