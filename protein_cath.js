@@ -37,6 +37,9 @@ async function generate_leaf_tooltip(instance) {
                 const infoobj = await Promise.all(infoprms);
                 names = infoobj.map( o=> o.name);
                 if (names.length == 4) {
+                    if (names[3] === undefined || names[3] === null || names[3].length ==0) {
+                        names[3] = cath_code; 
+                    }
                     cath_dict[cath_code] = names;
                 }
             }
@@ -56,9 +59,6 @@ async function generate_leaf_tooltip(instance) {
 
 function get_tooltip_domain(leafname, cath_id, name) {
     let content = `<p><strong><a href="https://aquaria.app/Human/${leafname}" target="_blank">${leafname}</a>`;
-    if (name === undefined || name === null || name.length ==0) {
-        name = cath_id;
-    }
     return content +  ` domain <a href="http://www.cathdb.info/browse/sunburst?from_cath_id=${cath_id}"  target="_blank">\'${name}\'</a></strong></p>`;
 }
 
