@@ -25,14 +25,14 @@ async function generate_leaf_tooltip(instance) {
             var cath_info = []
             const cath_code = leaf.dataset.cath;
             let names = cath_dict[cath_code]; 
+            let index = cath_code.indexOf('.');
+            cath_info.push(cath_code.substring(0, index));
+            index = cath_code.indexOf('.', index +1 );
+            cath_info.push(cath_code.substring(0, index));
+            index = cath_code.indexOf('.', index +1 );
+            cath_info.push(cath_code.substring(0, index));
+            cath_info.push(cath_code);
             if ( names == null) { 
-                let index = cath_code.indexOf('.');
-                cath_info.push(cath_code.substring(0, index));
-                index = cath_code.indexOf('.', index +1 );
-                cath_info.push(cath_code.substring(0, index));
-                index = cath_code.indexOf('.', index +1 );
-                cath_info.push(cath_code.substring(0, index));
-                cath_info.push(cath_code);
                 const infoprms = cath_info.map(async (c, index) => query_cath_info(c, index + 1));
                 const infoobj = await Promise.all(infoprms);
                 names = infoobj.map( o=> o.name);
@@ -44,7 +44,7 @@ async function generate_leaf_tooltip(instance) {
                 }
             }
             if (names.length == 4) {
-                content = get_tooltip_domain(leaf.dataset.name, cath_info[3], names[3])
+                content = get_tooltip_domain(leaf.dataset.name, cath_code, names[3])
                 content += get_tooltip_class(cath_info[0], names[0], leaf_colour)
                 + get_tooltip_architecture(cath_info[1], names[1], leaf_hue)
                 + get_tooltip_topo(cath_info[2], names[2]);
