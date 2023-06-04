@@ -1161,8 +1161,26 @@ d3.chart("hierarchy").extend("treemap", {
         y = d3.scale.linear().range([0, chart.options.height]);
 
     chart.layers.base.on("merge", function() {
-      node = chart.root;
-      chart.off("click:rect").on("click:rect", function(d) { collapse(node == d.parent ? chart.root : d.parent); });
+        node = chart.root;
+    
+        chart.off("click:rect").on("click:rect", function(d) { 
+              var targetNode;
+              if (node == d.parent){
+                targetNode = chart.root;
+              }
+              else {
+                if (node == d.parent.parent) {
+                  targetNode = d.parent;
+                }
+                else if (node == d.parent.parent.parent) {
+                  targetNode = d.parent.parent;
+                }
+                else {
+                  targetNode = d.parent.parent.parent;
+                }
+              }
+              collapse(targetNode); 
+          });
     });
 
     function collapse(d) {
