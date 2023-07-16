@@ -29,18 +29,20 @@
             .sortable("_DESC_")
             .collapsible();
 
+            var visElement = document.getElementById("vis");
             treemap.draw(json);
             tippy('.leaf', {
               allowHTML: true,
               arrow: true,
-              delay: [500, 0],
+              delay: [200, 0],
+              duration: [0, 0],
               maxWidth: 320,
               performance: true,
               size: 'large',
               theme:'light',
               interactive: true, 
-              appendTo: document.body,
-              placement: 'bottom',
+              followCursor: 'initial',
+              appendTo: visElement,
               content(leaf) {
                 return get_leaf_tooltip(leaf);
               },

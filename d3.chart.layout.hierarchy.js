@@ -1165,44 +1165,39 @@ d3.chart("hierarchy").extend("treemap", {
     
         chart.off("click:rect").on("click:rect", function(d) { 
               var targetNode;
-              // turn off extra colouring.
-              let viselem = d3.select("#vis");
-              if (viselem) {
-                viselem.attr("class", "")
-              }
               if (node == d.parent){
                 targetNode = chart.root;
+                d3.select("#vis").attr("class", "")
               }
               else {
                 if (node == d.parent.parent) {
                   targetNode = d.parent;
-                  let viselem = d3.select("#vis");
-                  if (viselem) {
-                    viselem.attr("class", "collapse4")
-                  }
+                  setTimeout(delayedAttr.bind(null, "collapse4"), 800);
                 }
                 else if (node == d.parent.parent.parent) {
                   targetNode = d.parent.parent;
-                  let viselem = d3.select("#vis");
-                  if (viselem) {
-                    viselem.attr("class", "collapse4")
-                  }
+                  setTimeout(delayedAttr.bind(null, "collapse4"), 800);
                 }
                 else if (node == d.parent.parent.parent.parent) {
                   targetNode = d.parent.parent.parent;
-                  let viselem = d3.select("#vis");
-                  if (viselem) {
-                    viselem.attr("class", "collapse3")
-                  }
+                  setTimeout(delayedAttr.bind(null, "collapse3"), 800);
                 }
                 else {
                   targetNode = d.parent.parent.parent.parent;
+                  d3.select("#vis").attr("class", "")
                 }
               }
               collapse(targetNode); 
           });
     });
 
+    function delayedAttr(newAttr) {
+        let viselem = d3.select("#vis");
+        if (viselem) {
+          viselem.attr("class", "")
+          viselem.attr("class", newAttr);
+        }
+    }
     function collapse(d) {
       var kx = chart.options.width  / d.dx,
           ky = chart.options.height / d.dy;
