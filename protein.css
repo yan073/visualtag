@@ -43,9 +43,16 @@ p {
   .cell text {
     cursor: move;
     font: 10px sans-serif;
-    text-anchor: middle; }
+    text-anchor: middle; 
+  }
 
-
+  #vis.collapse4 .cell text{ 
+    font: 30px sans-serif;
+  }
+  
+  #vis.collapse3 .cell text{ 
+    font: 20px sans-serif;
+  }
   
   .leafc1_1 text { 
     fill: var(--c1_label_border);
