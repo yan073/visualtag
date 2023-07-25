@@ -1155,6 +1155,7 @@ d3.chart("hierarchy").extend("treemap", {
 
   collapsible: function() {
     var chart = this;
+    var collapse_style = "";
 
     var node,
         x = d3.scale.linear().range([0, chart.options.width]),
@@ -1167,23 +1168,28 @@ d3.chart("hierarchy").extend("treemap", {
               var targetNode;
               if (node == d.parent){
                 targetNode = chart.root;
+                collapse_style = "";
                 d3.select("#vis").attr("class", "")
               }
               else {
                 if (node == d.parent.parent) {
                   targetNode = d.parent;
-                  setTimeout(delayedAttr.bind(null, "collapse4"), 800);
+                  collapse_style = "collapse4";
+                  setTimeout(delayedAttr.bind(null), 800);
                 }
                 else if (node == d.parent.parent.parent) {
                   targetNode = d.parent.parent;
-                  setTimeout(delayedAttr.bind(null, "collapse4"), 800);
+                  collapse_style = "collapse4";
+                  setTimeout(delayedAttr.bind(null), 800);
                 }
                 else if (node == d.parent.parent.parent.parent) {
                   targetNode = d.parent.parent.parent;
-                  setTimeout(delayedAttr.bind(null, "collapse3"), 800);
+                  collapse_style = "collapse3";
+                  setTimeout(delayedAttr.bind(null), 800);
                 }
                 else {
                   targetNode = d.parent.parent.parent.parent;
+                  collapse_style = "";
                   d3.select("#vis").attr("class", "")
                 }
               }
@@ -1191,13 +1197,16 @@ d3.chart("hierarchy").extend("treemap", {
           });
     });
 
-    function delayedAttr(newAttr) {
-        let viselem = d3.select("#vis");
-        if (viselem) {
-          viselem.attr("class", "")
-          viselem.attr("class", newAttr);
-        }
+    function delayedAttr() {
+        if (collapse_style.length > 0) {
+          let viselem = d3.select("#vis");
+          if (viselem) {
+            viselem.attr("class", "")
+            viselem.attr("class", collapse_style);
+          }
+      }
     }
+
     function collapse(d) {
       var kx = chart.options.width  / d.dx,
           ky = chart.options.height / d.dy;
